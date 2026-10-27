@@ -655,8 +655,12 @@ class Phys{
       const along=w.nx!==0?q.z:q.x,a0=w.nx!==0?Math.min(w.az,w.bz):Math.min(w.ax,w.bx),a1=w.nx!==0?Math.max(w.az,w.bz):Math.max(w.ax,w.bx);
       if(along<a0-BR||along>a1+BR||q.y-BR>w.top+.8)continue;
       const back=d1+BR+.005;q={x:q.x-w.nx*back,y:q.y,z:q.z-w.nz*back};b.setTranslation(q,true);const vn=u.x*w.nx+u.z*w.nz;if(vn>0){u={x:u.x-1.7*vn*w.nx,y:u.y,z:u.z-1.7*vn*w.nz};b.setLinvel(u,true);}break;}
+    // tremplin : impulsion vers le haut proportionnelle à la vitesse pour franchir le trou d'eau
+    for(const r of hd.ramps){if(!inRect(r,q.x,q.z))continue;const vd=u.x*r.dx+u.z*r.dz;const lift=Math.min(vd*.55,8);
+      if(vd>2.5&&u.y<lift*.9){u={x:u.x+r.dx*vd*.08,y:lift,z:u.z+r.dz*vd*.08};b.setLinvel(u,true);this.jumped=true;this.jumpT=1.5;}}
+    this.jumpT=Math.max(0,(this.jumpT||0)-dt);
     // une bordure ou un coin ne doit jamais faire décoller la balle (seuls les tremplins le peuvent)
-    if(u.y>.9&&!hd.ramps.some(r=>Math.hypot(q.x-r.cx,q.z-r.cz)<1.6)){b.setLinvel({x:u.x,y:.9,z:u.z},true);u={x:u.x,y:.9,z:u.z};}
+    if(u.y>.9&&!(this.jumpT>0)&&!hd.ramps.some(r=>Math.hypot(q.x-r.cx,q.z-r.cz)<1.6)){b.setLinvel({x:u.x,y:.9,z:u.z},true);u={x:u.x,y:.9,z:u.z};}
     const dv=Math.hypot(u.x-vx,u.z-vz);
     return{x:q.x,y:q.y-BR,z:q.z,vx:u.x,vy:u.y,vz:u.z,grounded,impact:dv};
   }
@@ -1255,6 +1259,7 @@ function rapierUpdate(dt){
     const r=PH.step(w);
     ball.x=r.x;ball.y=r.y;ball.z=r.z;ball.vx=r.vx;ball.vz=r.vz;ball.vy=r.vy;
     if(PH.portal){PH.portal=false;SFX.portal();}
+    if(PH.jumped){PH.jumped=false;SFX.jump();}
     if(r.impact>1.1&&ball.moving){const nb=H.bumpers.find(b=>!b.hub&&Math.hypot(b.x-r.x,b.z-r.z)<b.r+BR+.12);if(nb){nb.hit=.3;SFX.bump();}else if(!r.grounded&&r.vy>.5&&Math.hypot(r.x-H.cup.x,r.z-H.cup.z)<CR+BR)SFX.rim();else SFX.wall(r.impact);}
     if(!r.grounded&&r.vy>2.2&&!ball.air){ball.air=true;SFX.jump();}else if(r.grounded)ball.air=false;
     const dc=Math.hypot(r.x-H.cup.x,r.z-H.cup.z);
@@ -1720,7 +1725,7 @@ function updateVisuals(dt,t){
 function botProgress(hd,x,z,y){const c=cellAt(hd,x,z);if(!c||c.t==='w'||y<hd.waterY)return 1e9;const L=hd.L,k=c.own;
   return (L-1-k)*CS+Math.hypot(x-hd.cup.x,z-hd.cup.z)*.6;}
 function botShot(ph,hd,pos,ang,p){ph.place(pos.x,pos.y,pos.z);ph.t=0;const v=powerCurve(p)*MAXV;ph.body.setLinvel({x:Math.cos(ang)*v,y:0,z:Math.sin(ang)*v},true);ph.body.wakeUp();
-  let still=0;for(let i=0;i<60*14;i++){const r=ph.step(windNow(hd,ph.t));const dc=Math.hypot(r.x-hd.cup.x,r.z-hd.cup.z);
+  let still=0;for(let i=0;i<60*9;i++){const r=ph.step(windNow(hd,ph.t));const dc=Math.hypot(r.x-hd.cup.x,r.z-hd.cup.z);
     if(dc<CR-.02&&r.y+BR<hd.cupH-BR*.15)return{st:'in',x:r.x,y:r.y,z:r.z};
     if(r.y<hd.waterY-.1)return{st:'haz'};
     if(r.grounded&&Math.hypot(r.vx,r.vz)<.07&&Math.abs(r.vy)<.12){if((still+=ph.dt)>.3)return{st:'stop',x:r.x,y:r.y,z:r.z};}else still=0;}
@@ -1730,9 +1735,9 @@ function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non chargé'}
   try{for(let s=1;s<=maxStrokes;s++){let best=null;const base=botProgress(hd,pos.x,pos.z,pos.y);
       const toCup=Math.atan2(hd.cup.z-pos.z,hd.cup.x-pos.x);
       // angles : un tour complet grossier + un balayage fin vers la suite du tracé (ponts, passages étroits)
-      const cc=cellAt(hd,pos.x,pos.z),kc=cc?cc.own:0,angs=[];for(let a=0;a<36;a++)angs.push(a/36*Math.PI*2);
-      for(const ahead of [2,4]){const tp=hd.path[Math.min(hd.L-1,kc+ahead)],ta=Math.atan2((tp[1]+.5)*CS-pos.z,(tp[0]+.5)*CS-pos.x);for(let d=-24;d<=24;d+=3)angs.push(ta+d*Math.PI/180);}
-      for(const ang of angs)for(const p of [.12,.2,.28,.36,.45,.55,.66,.8,1]){const r=botShot(ph,hd,pos,ang,p);
+      const cc=cellAt(hd,pos.x,pos.z),kc=cc?cc.own:0,angs=[];for(let a=0;a<24;a++)angs.push(a/24*Math.PI*2);
+      for(const ahead of [3]){const tp=hd.path[Math.min(hd.L-1,kc+ahead)],ta=Math.atan2((tp[1]+.5)*CS-pos.z,(tp[0]+.5)*CS-pos.x);for(let d=-24;d<=24;d+=3)angs.push(ta+d*Math.PI/180);}
+      for(const ang of angs)for(const p of [.15,.3,.45,.6,.8,1]){const r=botShot(ph,hd,pos,ang,p);
         if(r.st==='in'){best={r,ang,p,sc:-1};break;}if(r.st==='haz')continue;const sc=botProgress(hd,r.x,r.z,r.y);if(!best||sc<best.sc)best={r,ang,p,sc};}
       // putts fins vers le trou quand il est proche
       if(best&&best.sc>=0&&Math.hypot(pos.x-hd.cup.x,pos.z-hd.cup.z)<6)for(let da=-.12;da<=.121;da+=.03)for(let p=.08;p<=.6;p+=.02){const r=botShot(ph,hd,pos,toCup+da,p);if(r.st==='in'){best={r,ang:toCup+da,p,sc:-1};break;}}
