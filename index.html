@@ -458,8 +458,8 @@ const flatDistRaw=v=>{const [a,b]=FRICTION.g;return v/b-(a/(b*b))*Math.log(1+b*v
 // la balle part en glissant puis se met à rouler : elle perd environ 28 % de sa vitesse (mesuré dans le moteur)
 const flatDist=v=>flatDistRaw(v*.72)*FLAT_CAL;
 const DMAX=()=>flatDist(MAXV);
-// jauge → distance visée : la 1re moitié sert aux petits coups précis (0 à 6 m), la 2de monte vite jusqu'au maximum
-const gaugeDist=p=>{p=clamp(p,0,1);return p<=.5?6*Math.pow(p/.5,1.25):6+(DMAX()-6)*Math.pow((p-.5)/.5,1.8);};
+// jauge → distance visée : proportionnelle de 0 à 100 % (50 % = moitié de la distance max sur le plat)
+const gaugeDist=p=>clamp(p,0,1)*DMAX();
 const distToV=d=>{let lo=0,hi=MAXV;for(let i=0;i<40;i++){const m=(lo+hi)/2;if(flatDist(m)<d)lo=m;else hi=m;}return (lo+hi)/2;};
 // courbe de puissance : jauge (0-1) → fraction de la vitesse max ; même jauge = même distance, sans aléatoire
 const powerCurve=p=>distToV(gaugeDist(p))/MAXV;
@@ -1578,8 +1578,8 @@ let simT=0,physAcc=0;
 function placeBall(x,z,y){const yy=y==null?hAt(H,x,z):y;Object.assign(ball,{x,z,y:yy,vx:0,vz:0,vy:0,air:false,falling:false,moving:false,holed:false,sinkT:0,stillT:0,rollT:0,portalCd:0,hazT:0,hidden:false});if(PH)PH.place(x,yy,z);}
 function canShoot(){return S.mode==='play'&&H&&!ball.moving&&!ball.holed&&!S.done&&ball.hazT<=0&&cam.intro>=1&&$('mPause').hidden&&!swing.on;}
 // ----- horloge commune du groupe : l'hôte publie son heure, chacun estime l'écart (le meilleur des derniers échantillons)
-const clockS={off:0,samples:[],lastCk:0,virt:0,useVirt:false};
-function sharedTime(){return clockS.useVirt?clockS.virt:(Date.now()+clockS.off)/1000-1.79e9;}
+const clockS={off:0,samples:[],lastCk:0};
+function sharedTime(){return (Date.now()+clockS.off)/1000-1.79e9;}
 function clockSample(ck){if(!ck||ck===clockS.lastCk)return;clockS.lastCk=ck;clockS.samples.push(ck-Date.now()+((S.net&&S.net.rtt)||0));if(clockS.samples.length>8)clockS.samples.shift();
   const best=Math.max(...clockS.samples);if(Math.abs(best-clockS.off)>30)clockS.off=best;}
 setInterval(()=>{if(S.net&&S.isHost&&S.net.kind!=='local')setP({ck:Date.now()+clockS.off});},2000);
@@ -1996,14 +1996,8 @@ $('opQual').addEventListener('change',e=>{OPT.qual=e.target.value;applyQuality()
 function fpsTick(dt){if(!fpsOn)return;fpsS.t+=dt;fpsS.n++;if(fpsS.t>=.5){$('fps').textContent=Math.round(fpsS.n/fpsS.t)+' FPS';fpsS.t=0;fpsS.n=0;}}
 window.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key.toLowerCase()==='m'&&!e.repeat){SFX.init();if(OPT.mus>0){OPT.musPrev=OPT.mus;OPT.mus=0;}else OPT.mus=OPT.musPrev||35;$('opMus').value=OPT.mus;Music.setVol(OPT.mus/100);saveOpts();toastMsg(OPT.mus?'Musique activée':'Musique coupée');}});
 
-// ===================== Sensations : ralenti près du trou, vent des ventilateurs, flash des champignons =====================
+// ===================== Sensations : vent des ventilateurs, flash des champignons, portails =====================
 let portalFlash=0;
-// ralenti seulement en solo : en groupe tout le monde suit la même horloge, la physique ne peut pas ralentir pour un seul joueur
-const slow={k:1};clockS.virt=Date.now()/1000-1.79e9;
-function updateSlowmo(dt){const solo=!S.net||S.net.kind==='local';if(solo&&!clockS.useVirt)clockS.virt=(Date.now()+clockS.off)/1000-1.79e9;clockS.useVirt=solo;
-  let want=1;if(solo&&S.mode==='play'&&ball.moving&&H&&!ball.holed){const dx=H.cup.x-ball.x,dz=H.cup.z-ball.z,d=Math.hypot(dx,dz),sp=Math.hypot(ball.vx,ball.vz);
-    if(d<1.2&&d>.05&&sp>.4&&sp<5&&(dx*ball.vx+dz*ball.vz)/(d*sp)>.25)want=.3;}
-  slow.k+=(want-slow.k)*Math.min(1,dt*(want<slow.k?10:3));if(solo)clockS.virt+=dt*slow.k;}
 function updateFeel(dt,t){if(!H)return;
   portalFlash=Math.max(0,portalFlash-dt);for(const m of anim.portals)m.scale.setScalar(1+portalFlash*.8);
   for(const {b,grp} of anim.bumps){if(b.hub)continue;const cap=grp.children[1];if(!cap||!cap.material)continue;if(cap.userData.e0==null){cap.userData.e0=cap.material.emissiveIntensity;cap.userData.ec=cap.material.emissive.getHex();}
@@ -2269,7 +2263,6 @@ $('btnAgain').addEventListener('click',()=>{$('mFinal').hidden=true;if(S.isHost|
 let last=performance.now();
 function frame(now){
   const dt=Math.min(.05,(now-last)/1000);last=now;
-  updateSlowmo(dt);
   if(H){simT+=dt;updateObstacles(PH?PH.t:sharedTime(),dt);if(S.mode==='play')updateBall(dt);keyCam(dt);updateCamera(dt);updateVisuals(dt,now/1000);}
   if(S.mode==='custom')renderPreview(dt);else{composer.render(dt);adaptQuality(dt);}
   fpsTick(dt);if(H)drawMini(dt,now/1000);
@@ -2343,10 +2336,10 @@ async function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non cha
       // angles : un tour complet grossier + un balayage fin vers la suite du tracé (ponts, passages étroits)
       const cc=cellAt(hd,pos.x,pos.z),kc=cc?cc.own:0,angs=[];for(let a=0;a<24;a++)angs.push(a/24*Math.PI*2);
       for(const ahead of [3]){const tp=hd.path[Math.min(hd.L-1,kc+ahead)],ta=Math.atan2((tp[1]+.5)*CS-pos.z,(tp[0]+.5)*CS-pos.x);for(let d=-24;d<=24;d+=3)angs.push(ta+d*Math.PI/180);}
-      for(const ang of angs){await yieldNow();for(const p of [.15,.3,.45,.6,.8,1]){const r=botShot(ph,hd,pos,ang,p);
+      for(const ang of angs){await yieldNow();for(const p of [.05,.1,.18,.28,.4,.55,.75,1]){const r=botShot(ph,hd,pos,ang,p);
         if(r.st==='in'){best={r,ang,p,sc:-1};break;}if(r.st==='haz')continue;const sc=botProgress(hd,r.x,r.z,r.y);if(!best||sc<best.sc)best={r,ang,p,sc};}}
       // putts fins vers le trou quand il est proche
-      if(best&&best.sc>=0&&Math.hypot(pos.x-hd.cup.x,pos.z-hd.cup.z)<6)for(let da=-.12;da<=.121;da+=.03)for(let p=.08;p<=.6;p+=.02){const r=botShot(ph,hd,pos,toCup+da,p);if(r.st==='in'){best={r,ang:toCup+da,p,sc:-1};break;}}
+      if(best&&best.sc>=0&&Math.hypot(pos.x-hd.cup.x,pos.z-hd.cup.z)<6)for(let da=-.12;da<=.121;da+=.03)for(let p=.006;p<=.14;p+=.004){const r=botShot(ph,hd,pos,toCup+da,p);if(r.st==='in'){best={r,ang:toCup+da,p,sc:-1};break;}}
       if(!best)return{idx,ok:false,log:log.concat('aucun tir valable')};
       log.push(Math.round(best.ang*57.3)+'°/'+Math.round(best.p*100)+'%');
       if(best.r.st==='in')return{idx,ok:true,strokes:s,par:hd.spec.par,log};
@@ -2356,7 +2349,7 @@ async function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non cha
   finally{ph.free();}}
 
 // accès de débogage depuis la console (le script est un module)
-Object.assign(window,{renderPreview,holed,showFinal,podium,stepFrame:dt=>{updateSlowmo(dt);if(!H)return;updateObstacles(PH?PH.t:sharedTime(),dt);if(S.mode==='play')updateBall(dt);updateVisuals(dt,performance.now()/1000);},shoot,sharedTime,clockS,gaugeDist,flatDistRaw,distToV,previewPath,aimMove,ballScreen,floatText,camAvoid,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
+Object.assign(window,{renderPreview,holed,showFinal,podium,stepFrame:dt=>{if(!H)return;updateObstacles(PH?PH.t:sharedTime(),dt);if(S.mode==='play')updateBall(dt);updateVisuals(dt,performance.now()/1000);},shoot,sharedTime,clockS,gaugeDist,flatDistRaw,distToV,previewPath,aimMove,ballScreen,floatText,camAvoid,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
 for(const [k,g] of Object.entries({anim:()=>anim,H:()=>H,PH:()=>PH,RAPIER:()=>RAPIER,simT:()=>simT}))Object.defineProperty(window,k,{get:g,configurable:true});
 
 // ===================== Démarrage =====================
