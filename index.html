@@ -1627,7 +1627,9 @@ function rapierUpdate(dt){
     ball.x=r.x;ball.y=r.y;ball.z=r.z;ball.vx=r.vx;ball.vz=r.vz;ball.vy=r.vy;
     if(PH.portal){PH.portal=false;SFX.portal();burst(r.x,r.y+.1,r.z,[0x3ee0ff,0xff8a3d,0xffffff],1.3,3.2,.9);portalFlash=.5;}
     if(PH.jumped){PH.jumped=false;SFX.jump();}
-    if(r.impact>1.1&&ball.moving){const nb=H.bumpers.find(b=>!b.hub&&Math.hypot(b.x-r.x,b.z-r.z)<b.r+BR+.12);if(nb){nb.hit=.3;SFX.bump();}else if(!r.grounded&&r.vy>.5&&Math.hypot(r.x-H.cup.x,r.z-H.cup.z)<CR+BR)SFX.rim();else{{const dx=r.vx-pvx,dz=r.vz-pvz,dl=Math.hypot(dx,dz)||1;me.squash(dx/dl,dz/dl,r.impact*.035);if(r.impact>6)me.setMood('dizzy',1.6);}if(H.boxes.some(o=>o.kind!=='corner'&&Math.hypot(o.cx-r.x,o.cz-r.z)<Math.max(o.hx,o.hz)+.35))SFX.metal(r.impact);else SFX.wall(r.impact);if(r.impact>7&&performance.now()-(ball.aieT||0)>1500){ball.aieT=performance.now();floatText('Aïe !',r.x,r.y+.45,r.z,'#ff9c8f');}}}
+    if(r.impact>1.1&&ball.moving){const nb=H.bumpers.find(b=>!b.hub&&Math.hypot(b.x-r.x,b.z-r.z)<b.r+BR+.12);if(nb){nb.hit=.3;SFX.bump();}else if(!r.grounded&&r.vy>.5&&Math.hypot(r.x-H.cup.x,r.z-H.cup.z)<CR+BR)SFX.rim();else{{const dx=r.vx-pvx,dz=r.vz-pvz,dl=Math.hypot(dx,dz)||1;me.squash(dx/dl,dz/dl,r.impact*.035);if(r.impact>6)me.setMood('dizzy',1.6);}const onObs=H.boxes.some(o=>o.kind!=='corner'&&Math.hypot(o.cx-r.x,o.cz-r.z)<Math.max(o.hx,o.hz)+.35);if(onObs)SFX.metal(r.impact);else SFX.wall(r.impact);
+      // contre un muret : « Allô doudou ! » (contre un obstacle : « Aïe ! »)
+      if(r.impact>2.5&&performance.now()-(ball.aieT||0)>1500){ball.aieT=performance.now();floatText(onObs?'Aïe !':'Allô doudou !',r.x,r.y+.45,r.z,'#ff9c8f');}}}
     if(!r.grounded&&r.vy>2.2&&!ball.air){ball.air=true;ball.airVy=0;SFX.jump();}
     else if(!r.grounded&&ball.air)ball.airVy=Math.min(ball.airVy||0,r.vy);
     else if(r.grounded&&ball.air){ball.air=false;const c=cellAt(H,r.x,r.z);SFX.land(onBridge(r.x,r.z)?'wood':c?c.t:'g',Math.abs(ball.airVy||2)/5);}
