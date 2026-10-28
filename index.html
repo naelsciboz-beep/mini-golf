@@ -278,7 +278,7 @@ const MAXS = Infinity;   // nombre de coups illimité
 const TIMER = 25;        // secondes après le premier qui finit
 const PEN = 5;           // pénalité
 const SLOPE = 9;
-const GROUNDW = 1.25, AIRW = 6;
+const GROUNDW = .7, AIRW = 3.2;
 const MAXP = 5;
 const COLORS = ['#ff5b47','#ff9f1c','#ffd447','#3ee08f','#1fb5a8','#3fa7ff','#5a6bff','#b26bff','#ff8fd0','#ffffff','#2d2d33','#8b5a34'];
 const COLOR_NAMES = ['Rouge','Orange','Jaune','Vert','Turquoise','Bleu','Indigo','Violet','Rose','Blanc','Noir','Brun'];
@@ -305,7 +305,7 @@ const HOLES = [
   // ---- Forêt : apprendre (virages, premiers obstacles)
   {n:'Premier pas',p:'E6',w:2,par:2,wd:[0,0],f:[]},
   {n:'Le virage',p:'E4N4',w:2,par:2,wd:[90,.12],f:[['bump',.7,1]]},
-  {n:'Le coude',p:'E3N3E3',w:2,par:2,wd:[180,.15],f:[]},
+  {n:"Le chemin de ronde",p:"E5N5E4",w:2,par:3,wd:[180,.15],f:[["ledge",.5]]},
   {n:'Le grand U',p:'E6N4W6',w:2,par:3,wd:[45,.2],f:[['shortcut',.15],['mill',.5]]},
   {n:'Petit pont',p:'E7',w:2,par:3,wd:[270,.2],f:[['bridge',.5,2]]},
   {n:'La colline',p:'E3N3E4',w:2,par:3,wd:[0,.25],f:[['up',.3,1],['down',.78,1]]},
@@ -328,11 +328,11 @@ const HOLES = [
   {n:'La patinoire',p:'E4N4',w:2,par:3,wd:[180,.3],f:[['ice',.15,.85]]},
   {n:'Glissade',p:'E4N4E4',w:2,par:3,wd:[0,.35],f:[['down',.15,1],['ice',.3,.7],['bump',.55,1]]},
   {n:'Le lac gelé',p:'E5S5W4',w:2,par:3,wd:[90,.4],f:[['ice',.1,.9],['shortcut',.12]]},
-  {n:'Bonshommes de neige',p:'E3N3E3S3E3',w:2,par:4,wd:[270,.4],f:[['bump',.35,3],['mill',.72]]},
+  {n:"Bonshommes de neige",p:"E3N3E3S3E3",w:2,par:4,wd:[270,.4],f:[["ledge",.6],['bump',.35,3],['mill',.72]]},
   {n:'La crevasse',p:'E6N3',w:2,par:3,wd:[45,.45],f:[['ice',.1,.25],['jump',.3]]},
   {n:'Le toboggan',p:'E4S6E3',w:1,par:4,wd:[0,.4],f:[['down',.35,1],['down',.55,1],['ice',.3,.7]]},
   {n:'Pont de glace',p:'E5N4E5',w:2,par:4,wd:[90,.45],f:[['ice',.12,.3],['bridge',.5,2,1],['fan',.82]]},
-  {n:'Avalanche',p:'E4N3E3S3E4',w:2,par:4,wd:[135,.5,1],f:[['mover',.3],['mover',.6]]},
+  {n:"Avalanche",p:"E4N3E3S3E4",w:2,par:4,wd:[135,.5,1],f:[["ledge",.5],['mover',.3],['mover',.6]]},
   {n:"L'igloo",p:'E5N5W3',w:2,par:4,wd:[300,.45],f:[['tunnel',.2],['ice',.35,.6],['funnel',.6]]},
   {n:'Pic polaire',p:'E3N3E3N3E3N3E3',w:1,par:5,wd:[90,.55],f:[['bump',.25,1],['tunnel',.5],['mill',.8]]},
   // ---- Ville : toits, plateformes, ventilateurs
@@ -342,21 +342,21 @@ const HOLES = [
   {n:"Saut d'immeuble",p:'E4N4E6',w:2,par:4,wd:[180,.6,1],f:[['fan',.35],['jump',.72]]},
   {n:'Les ventilateurs',p:'E3S4E4',w:2,par:3,wd:[45,.55],f:[['fan',.3],['bump',.55,2],['fan',.78]]},
   {n:'Le chantier',p:'E5N2E5',w:3,par:4,wd:[315,.6],f:[['pond',.35,1],['mill',.55],['pond',.75,1]]},
-  {n:'La grue',p:'E3N4E4S4E3',w:2,par:5,wd:[120,.65],f:[['up',.2,1],['gate',.5],['down',.8,1]]},
+  {n:"La grue",p:"E3N4E4S4E3",w:2,par:5,wd:[120,.65],f:[["ledge",.62],['up',.2,1],['gate',.5],['down',.8,1]]},
   {n:'Le gouffre',p:'E5N4E4',w:2,par:4,wd:[90,.7],f:[['jump',.12],['gate',.72]]},
   {n:"L'usine",p:'E2N2E2N2E2N2E2',w:1,par:4,wd:[0,.6],f:[['mill',.3],['mill',.6],['tunnel',.85]]},
   {n:'Le grand carrefour',p:'E6N6W6S3E3',w:2,par:5,wd:[225,.75,1],f:[['water',.15],['spin',.48],['shortcut',.08]]},
   // ---- Espace : gravité faible, portails, combinaisons
-  {n:'Décollage',p:'E6N3E3',w:2,par:3,wd:[90,.6],f:[['jump',.25]]},
+  {n:'Décollage',p:'E8N3E3',w:2,par:3,wd:[90,.6],f:[['jump',.25]]},
   {n:'Trou de ver',p:'E4N5E4',w:2,par:4,wd:[0,.6],f:[['portal',.2,.72],['bump',.5,2]]},
   {n:'Les anneaux',p:'E4S4E4',w:3,par:4,wd:[180,.65],f:[['spin',.3],['spin',.7]]},
   {n:'Gravité zéro',p:'E4N4E4N4E4',w:2,par:5,wd:[270,.7],f:[['up',.2,1],['bridge',.5,2],['down',.82,1],['fan',.65]]},
   {n:'Astéroïdes',p:'E5N5',w:3,par:4,wd:[45,.7,1],f:[['bump',.3,4],['bump',.72,4]]},
   {n:'Nébuleuse',p:'E4S3E3N3E4',w:2,par:4,wd:[135,.75],f:[['portal',.2,.55],['boost',.4],['gate',.78]]},
-  {n:'Station orbitale',p:'E3N3E3S3E3N3E3',w:1,par:5,wd:[0,.7],f:[['boost',.3],['mill',.55],['tunnel',.8]]},
+  {n:"Station orbitale",p:"E3N3E3S3E3N3E3",w:1,par:5,wd:[0,.7],f:[["ledge",.45],['boost',.3],['mill',.55],['tunnel',.8]]},
   {n:'Supernova',p:'E3N3E3',w:3,par:4,wd:[225,.8,1],f:[['dip',.5,1.1],['bump',.5,3]]},
   {n:'Pluie de météores',p:'E5N4E6',w:2,par:5,wd:[90,.85],f:[['jump',.2],['fan',.5],['bridge',.8,2]]},
-  {n:'Le grand final',p:'E6N5W6N4E6',w:2,par:5,wd:[315,.9,1],f:[['mill',.08],['shortcut',.18],['up',.45,1],['jump',.6],['spin',.9]]},
+  {n:"Le grand final",p:"E6N5W6N4E6",w:2,par:5,wd:[315,.9,1],f:[["ledge",.35],['mill',.08],['shortcut',.18],['up',.45,1],['jump',.6],['spin',.9]]},
 ];
 
 // taille de chaque trou (le par est fixé à la main, de 2 à 5)
@@ -403,17 +403,24 @@ function buildHole(idx){
   const straight=(t,before,after)=>{const k0=kAt(t);const ok=k=>{if(k-before<1||k+after>L-2)return false;const d=dirAt(k);for(let q=k-before;q<=k+after;q++){const e=dirAt(q);if(e[0]!==d[0]||e[1]!==d[1]||used.has(q))return false;}return true;};
     for(let s=0;s<L;s++){if(ok(k0-s))return k0-s;if(ok(k0+s))return k0+s;}return -1;};
   const mark=(a,b)=>{for(let q=a;q<=b;q++)used.add(q);};
-  const hd={idx,spec:sp,world:W,cells,path,K,fans:[],hills:[],bumpers:[],boxes:[],ramps:[],boosts:[],portals:[],bridges:[],tunnels:[],chamfers:[]};
+  const hd={idx,spec:sp,world:W,cells,path,K,fans:[],hills:[],bumpers:[],boxes:[],ramps:[],boosts:[],portals:[],bridges:[],tunnels:[],chamfers:[],solids:[]};
   const t0=dilC(0), t1=dilC(L-1);
   hd.tee={x:t0[0],z:t0[1]}; hd.cup={x:t1[0],z:t1[1]};
   const farFromEnds=(x,z,m)=>Math.hypot(x-hd.tee.x,z-hd.tee.z)>m&&Math.hypot(x-hd.cup.x,z-hd.cup.z)>m;
-  const levelRamps=new Map();
+  const levelRamps=new Map(),levelDrops=new Map();
   const jumps=[];
   // obstacles ajoutés automatiquement le long du tracé : plus nombreux et plus variés au fil des mondes
-  const feats=sp.f.concat(autoFeatures(idx,L,sp.f.map(f=>f[1])));
+  // les changements de niveau (rampes, chemin de ronde) sont posés en premier : les raccourcis en tiennent compte
+  const lvF=f=>['up','down','ledge'].includes(f[0])?0:1;
+  const feats=sp.f.concat(autoFeatures(idx,L,sp.f.map(f=>f[1]))).sort((a,b)=>lvF(a)-lvF(b));
 
-  for(const f of feats){
+  for(const f0 of feats){const f=f0.slice();
     const ty=f[0];
+    // un obstacle automatique ne se pose jamais à côté d'un élément déjà placé (tremplin, pont, rampe, moulin…)
+    if(f[4]==='auto'){const k=kAt(f[1]);let busy=false;for(let q=k-2;q<=k+2;q++)if(used.has(q))busy=true;if(busy)continue;if(!['windmill','ferry','slalom'].includes(ty))mark(k-1,k+1);}
+    else if(['mill','spin','gate','mover','block','bump','boost','portal','water','pond'].includes(ty)){
+      // jamais sur une zone déjà prise (chemin de ronde, rampe, tremplin) : on décale vers la case libre la plus proche
+      let k=kAt(f[1]);if(used.has(k)){for(let s=1;s<L;s++){if(k+s<L-1&&!used.has(k+s)){k+=s;break;}if(k-s>0&&!used.has(k-s)){k-=s;break;}}f[1]=k/(L-1);}mark(k,k);}
     if(ty==='up'||ty==='down'){const k=straight(f[1],sp.w,sp.w+1);if(k<0)continue;mark(k-sp.w,k+sp.w);levelRamps.set(k,(ty==='up'?1:-1)*(f[2]||1));}
     else if(ty==='sand'){const k=kAt(f[1]),r=f[2]||0;for(let kk=k-r;kk<=k+r;kk++)if(kk>0&&kk<L-1)for(const [i,j] of cross(kk))setT(i,j,'s');}
     else if(ty==='ice'){for(let kk=kAt(f[1]);kk<=kAt(f[2]);kk++)for(const [i,j] of cross(kk))setT(i,j,'i');}
@@ -428,10 +435,10 @@ function buildHole(idx){
     else if(ty==='block'){const k=kAt(f[1]);const c=crossC(k),p=perp(k),Wd=crossW(k),side=rng()<.5?-1:1;const hx=Wd*.19;
       hd.boxes.push({kind:'block',cx:c[0]+p[0]*side*(Wd/2-hx),cz:c[1]+p[1]*side*(Wd/2-hx),hx,hz:.28,hy:.21,a:Math.atan2(p[1],p[0]),e:.7});}
     else if(ty==='mill'){const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k);const w=(f[2]||1.35)*(rng()<.5?1:-1),a0=rng()*Math.PI;
-      hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.42,hz:.07,hy:.1,lift:.14,a:a0,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+w*t})});
+      hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.42,hz:.07,hy:.1,lift:.03,a:a0,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+w*t})});
       hd.bumpers.push({x:c[0],z:c[1],r:.16,e:.6,hub:true,hit:0});}
     else if(ty==='spin'){const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k);const w=1.1*(rng()<.5?1:-1),a0=rng()*Math.PI;
-      for(const off of [0,Math.PI/2])hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.4,hz:.07,hy:.1,lift:.14,a:a0+off,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+off+w*t})});
+      for(const off of [0,Math.PI/2])hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.4,hz:.07,hy:.1,lift:.03,a:a0+off,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+off+w*t})});
       hd.bumpers.push({x:c[0],z:c[1],r:.17,e:.6,hub:true,hit:0});}
     else if(ty==='gate'){const k=kAt(f[1]);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),per=3+rng()*1.2,ph=rng()*6.28,hx=Wd/4;
       for(const s of [-1,1])hd.boxes.push({kind:'gate',cx:c[0]+p[0]*s*hx,cz:c[1]+p[1]*s*hx,hx:hx,hz:.16,hy:.25,a,e:.6,motion:t=>{const o=Math.max(0,Math.sin(t*6.283/per+ph))*hx*.92;const q=s*(hx+o);return{cx:c[0]+p[0]*q,cz:c[1]+p[1]*q,a};}});}
@@ -441,7 +448,9 @@ function buildHole(idx){
       hd.boosts.push({cx:c[0],cz:c[1],hx:Wd*.4,hz:.6,a:Math.atan2(p[1],p[0]),dx:d[0],dz:d[1]});}
     else if(ty==='hill'||ty==='dip'){const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k);hd.hills.push({x:c[0],z:c[1],a:(ty==='dip'?-1:1)*(f[2]||.8),s:Math.max(1.4,Wd*.55)});}
     else if(ty==='funnel'){hd.hills.push({x:hd.cup.x,z:hd.cup.z,a:-(f[1]||.5),s:1.8});}
-    else if(ty==='tunnel'){const k=kAt(f[1]);const c=crossC(k),d=dirAt(k);hd.tunnels.push({k,cx:c[0],cz:c[1],dx:d[0],dz:d[1],r:crossW(k)/2+WT});}
+    else if(ty==='tunnel'){const k=straight(f[1],1,1);if(k<0)continue;mark(k-1,k+1);const c=crossC(k),d=dirAt(k);hd.tunnels.push({k,cx:c[0],cz:c[1],dx:d[0],dz:d[1],r:crossW(k)/2+WT});
+      // piliers de l'arche posés sur les murets, légèrement dans le passage : solides
+      const p=perp(k),Wd=crossW(k);for(const s of [-1,1])hd.solids.push({kind:'tpost',cx:c[0]+p[0]*s*(Wd/2+.02),cz:c[1]+p[1]*s*(Wd/2+.02),hx:.2,hz:.32,h:Wd*.25+.55,a:Math.atan2(p[1],p[0])});}
     else if(ty==='jump'){const k=straight(f[1],1,2);if(k<0)continue;mark(k-1,k+2);const d=dirAt(k),p=perp(k),c=crossC(k),Wd=crossW(k);
       for(const [i,j] of cross(k+1))setT(i,j,'w');
       jumps.push({k,cx:c[0]+d[0]*CS*.25,cz:c[1]+d[1]*CS*.25,hx:Wd/2,hz:.5,a:Math.atan2(p[1],p[0]),dx:d[0],dz:d[1],px:p[0],pz:p[1]});}
@@ -455,13 +464,28 @@ function buildHole(idx){
       let k1=kAt(f[1]),p1=path[k1],best=null;
       for(let kk=Math.max(1,k1-2);kk<=Math.min(L-8,k1+8)&&!best;kk++){k1=kk;p1=path[k1];
       for(let k2=L-2;k2>k1+5;k2--){const p2=path[k2];if(p2[0]!==p1[0]&&p2[1]!==p1[1])continue;const n=Math.abs(p2[0]-p1[0])+Math.abs(p2[1]-p1[1]);if(n<2||n>13)continue;
-        if([...levelRamps.keys()].some(k=>k>=k1-1&&k<=k2+1))continue;const dx=Math.sign(p2[0]-p1[0]),dz=Math.sign(p2[1]-p1[1]);let ok=true,gap=[];
+        if([...levelRamps.keys(),...levelDrops.keys()].some(k=>k>=k1-1&&k<=k2+1))continue;const dx=Math.sign(p2[0]-p1[0]),dz=Math.sign(p2[1]-p1[1]);let ok=true,gap=[];
         for(let s=1;s<n;s++){const i=p1[0]+dx*s,j=p1[1]+dz*s,c=cells.get(K(i,j));if(!c){gap.push([i,j]);continue;}if(Math.abs(c.own-k1)>2&&Math.abs(c.own-k2)>2||c.t==='w'){ok=false;break;}}
         if(ok&&gap.length){best={k2,gap,dx,dz};break;}}}
       if(!best)continue;mark(k1-1,k1+1);mark(best.k2-1,best.k2+1);
       for(const [i,j] of best.gap)cells.set(K(i,j),{i,j,t:'w',own:k1,e:0});
       const g0=best.gap[0],g1=best.gap[best.gap.length-1];const sx=(g0[0]+.5-best.dx*.5)*CS,sz=(g0[1]+.5-best.dz*.5)*CS,ex=(g1[0]+.5+best.dx*.5)*CS,ez=(g1[1]+.5+best.dz*.5)*CS;
       const len=Math.hypot(ex-sx,ez-sz),bx=(ex-sx)/len,bz=(ez-sz)/len;hd.bridges.push({k:k1,cx:(sx+ex)/2,cz:(sz+ez)/2,hx:.5,hz:len/2+.25,a:Math.atan2(bx,-bz),bx,bz,len,shortcut:true});}
+    else if(ty==='ledge'){// chemin de ronde : longer le haut d'un muret étroit, vide à gauche et à droite, un virage, puis on tombe sur la suite plus bas
+      const n=2,kt=kAt(f[1]);let best=-1;
+      const same=(a,b)=>a[0]===b[0]&&a[1]===b[1];
+      const okK=k=>{if(k-n<2||k+n>L-3)return false;const d1=dirAt(k-1),d2=dirAt(k);if(same(d1,d2))return false;
+        for(let q=k-n-1;q<k;q++)if(!same(dirAt(q),d1))return false;for(let q=k;q<=k+n+1;q++)if(!same(dirAt(q),d2))return false;
+        for(let q=k-n-1;q<=k+n+2;q++)if(used.has(q)||levelRamps.has(q)||levelDrops.has(q))return false;return true;};
+      for(let s=0;s<L&&best<0;s++){if(okK(kt-s))best=kt-s;else if(okK(kt+s))best=kt+s;}
+      if(best<0)continue;const k=best,kA=k-n,kB=k+n;mark(kA-1,kB+2);
+      for(const c of cells.values())if(c.own>=kA&&c.own<=kB)c.t='w';for(let kk=kA;kk<=kB;kk++)for(const [i,j] of cross(kk))setT(i,j,'w');
+      const lw=[.8,.72,.66,.62,.6][Math.floor(idx/10)],d1=dirAt(kA),d2=dirAt(kB),cA=crossC(kA),cB=crossC(kB);
+      const cn=d1[0]!==0?[cB[0],cA[1]]:[cA[0],cB[1]];
+      const leg=(sx,sz,ex,ez)=>{const len=Math.hypot(ex-sx,ez-sz),bx=(ex-sx)/len,bz=(ez-sz)/len;hd.bridges.push({k:kA,cx:(sx+ex)/2,cz:(sz+ez)/2,hx:lw/2,hz:len/2,a:Math.atan2(bx,-bz),bx,bz,len,ledge:true});};
+      leg(cA[0]-d1[0]*(CS/2+.12),cA[1]-d1[1]*(CS/2+.12),cn[0]+d1[0]*lw/2,cn[1]+d1[1]*lw/2);
+      leg(cn[0]-d2[0]*lw/2,cn[1]-d2[1]*lw/2,cB[0]+d2[0]*CS/2,cB[1]+d2[1]*CS/2);
+      levelDrops.set(kB+1,1);}
     else if(ty==='fan'){// zone de vent : un ventilateur pousse la balle sur le côté
       const k=kAt(f[1]);if(used.has(k))continue;mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),side=rng()<.5?-1:1;
       hd.fans.push({cx:c[0],cz:c[1],hx:Wd/2,hz:CS*.5,a:Math.atan2(p[1],p[0]),fx:p[0]*side,fz:p[1]*side,str:6+Math.floor(idx/10)*1.5,w:Wd,sx:c[0]-p[0]*side*(Wd/2+.55),sz:c[1]-p[1]*side*(Wd/2+.55)});}
@@ -472,6 +496,8 @@ function buildHole(idx){
       hd.boxes.push({kind:'mover',cx:c[0],cz:c[1],hx:.6,hz:.3,hy:.24,a,e:.9,motion:t=>{const s=Math.sin(t*6.283/per+ph)*A;return{cx:c[0]+p[0]*s,cz:c[1]+p[1]*s,a};}});}
     else if(ty==='windmill'){// moulin : pales verticales qui balaient le passage, on passe entre deux pales
       const k=straight(f[1],1,1);if(k<0)continue;mark(k-1,k+1);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),w=(1+rng()*.5)*(rng()<.5?1:-1),r0=rng()*6.28,hub=1.05;
+      // piliers de l'arche : solides (même taille que le visuel)
+      const W2=Math.min(1.05,Wd*.46)+.35;for(const s of [-1,1])hd.solids.push({kind:'pillar',cx:c[0]+p[0]*s*W2,cz:c[1]+p[1]*s*W2,hx:.15,hz:.15,h:hub+.5,a});
       for(const off of [0,Math.PI/2])hd.boxes.push({kind:'wblade',first:off===0,cx:c[0],cz:c[1],hx:Math.min(1.05,Wd*.46),hz:.09,hy:.07,lift:hub-.07,hub,a,e:.6,roll:r0+off,motion:t=>({cx:c[0],cz:c[1],a,roll:r0+off+w*t})});}
     else if(ty==='ferry'){// plateforme mobile au-dessus d'un trou d'eau
       const k=straight(f[1],1,2);if(k<0)continue;mark(k-1,k+2);for(const [i,j] of cross(k+1))setT(i,j,'w');
@@ -484,13 +510,13 @@ function buildHole(idx){
   for(const kk of [1,L-2]) for(const o of offs){const c=cells.get(K(path[kk][0]+o[0],path[kk][1]+o[1]));if(c&&c.t==='w')c.t='g';}
 
   const lv=new Array(L).fill(0);let acc=0;
-  for(let k=0;k<L;k++){if(levelRamps.has(k)){const n=levelRamps.get(k);lv[k]=acc;acc+=n;}else lv[k]=acc;}
+  for(let k=0;k<L;k++){if(levelDrops.has(k))acc-=levelDrops.get(k);if(levelRamps.has(k)){const n=levelRamps.get(k);lv[k]=acc;acc+=n;}else lv[k]=acc;}
   const minLv=Math.min(0,...lv,acc);
   for(const c of cells.values()){const k=c.own;if(levelRamps.has(k)){const d=dirAt(k);c.r={e0:(lv[k]-minLv)*LV,e1:(lv[k]+levelRamps.get(k)-minLv)*LV,dx:d[0],dz:d[1]};c.e=c.r.e0;}else c.e=(lv[k]-minLv)*LV;}
   for(const b of hd.bridges)b.y=(lv[b.k]-minLv)*LV;
   // zones gardées parfaitement plates : bouts des ponts, tremplins, plateformes, portails (pas de rebord à l'entrée)
   hd.flats=[];for(const b of hd.bridges)for(const s of [-1,1])hd.flats.push([b.cx+b.bx*s*b.len/2,b.cz+b.bz*s*b.len/2]);
-  for(const r of jumps)hd.flats.push([r.cx,r.cz]);for(const p of hd.portals)hd.flats.push([p.ax,p.az],[p.bx,p.bz]);for(const o of hd.boxes)if(o.kind==='ferry')hd.flats.push([o.cx0,o.cz0]);
+  for(const r of jumps)hd.flats.push([r.cx,r.cz]);for(const p of hd.portals)hd.flats.push([p.ax,p.az],[p.bx,p.bz]);for(const o of hd.boxes)if(o.kind==='ferry')hd.flats.push([o.cx0??o.cx,o.cz0??o.cz]);
   hd.levelRamps=[...levelRamps.keys()];
   const floorCells=[...cells.values()].filter(c=>c.t!=='w');
   for(let n=6+Math.floor(rng()*5);n>0;n--){const c=floorCells[Math.floor(rng()*floorCells.length)];hd.hills.push({x:(c.i+rng())*CS,z:(c.j+rng())*CS,a:(rng()<.5?-1:1)*W.und*(.6+rng()*.6),s:2.4+rng()*2.6,u:true});}
@@ -514,8 +540,12 @@ function buildHole(idx){
   hd.bbox={x0,z0,x1,z1,cx:(x0+x1)/2,cz:(z0+z1)/2,size:Math.max(x1-x0,z1-z0)};
   // certains bords extérieurs restent ouverts sur l'eau (de plus en plus dans les mondes avancés)
   const distSeg=(e,x,z)=>{const ex=e.bx-e.ax,ez=e.bz-e.az,L2=ex*ex+ez*ez;let t=((x-e.ax)*ex+(z-e.az)*ez)/L2;t=clamp(t,0,1);return Math.hypot(x-e.ax-ex*t,z-e.az-ez*t);};
+  // pas de bord ouvert autour de la zone d'atterrissage d'un tremplin
+  const nearJump=e=>jumps.some(r=>{for(let s=1;s<=5;s++)if(distSeg(e,r.cx+r.dx*CS*s,r.cz+r.dz*CS*s)<sp.w*CS/2+2)return true;return false;});
+  // ni à côté d'un obstacle qui pousse la balle (bloc, moulin, porte, champignon) : ce serait injuste
+  const nearObs=e=>hd.boxes.some(o=>o.kind!=='corner'&&!o.floor&&distSeg(e,o.cx,o.cz)<Math.max(o.hx,o.hz)+1.6)||hd.bumpers.some(b=>distSeg(e,b.x,b.z)<1.6);
   for(const e of hd.edges){const len=Math.hypot(e.bx-e.ax,e.bz-e.az);
-    e.rail=e.ty==='step'||(e.ty==='out'&&!(idx>2&&len>CS*1.5&&distSeg(e,hd.cup.x,hd.cup.z)>4.5&&distSeg(e,hd.tee.x,hd.tee.z)>4.5&&rng()<W.open));}
+    e.rail=e.ty==='step'||(e.ty==='out'&&!(idx>2&&len>CS*1.5&&!nearJump(e)&&!nearObs(e)&&distSeg(e,hd.cup.x,hd.cup.z)>4.5&&distSeg(e,hd.tee.x,hd.tee.z)>4.5&&rng()<W.open));}
   hd.walls=hd.edges.filter(e=>e.rail);
   for(const w of hd.walls){let top=-1e9,bot=1e9;for(let s=0;s<=8;s++){const x=w.ax+(w.bx-w.ax)*s/8-w.nx*.05,z=w.az+(w.bz-w.az)*s/8-w.nz*.05,h=hAt(hd,x,z);top=Math.max(top,h);bot=Math.min(bot,h);}
     w.top=top+WALLH;w.bot=w.ty==='step'?-50:bot-.12;}
@@ -541,7 +571,7 @@ const AUTO_POOLS=[['bump','block','mill','sand','slalom'],['block','sand','mill'
 function autoFeatures(idx,L,specTs){if(idx<2)return[];const w=Math.floor(idx/10),r=mulberry32(idx*131+9),pool=AUTO_POOLS[w];
   const every=Math.max(4,10-w-Math.floor((idx%10)/3)),out=[];
   for(let k=Math.round(every*.8);k<L-4;k+=every+Math.floor(r()*3)){const t=k/(L-1);if(t<.12||t>.88||specTs.some(s=>Math.abs(s-t)<.07))continue;
-    const ty=pool[Math.floor(r()*pool.length)];out.push(ty==='bump'?['bump',t,2]:ty==='sand'?['sand',t,0]:ty==='ice'?['ice',t,Math.min(.88,t+.05)]:[ty,t]);}
+    const ty=pool[Math.floor(r()*pool.length)];out.push(ty==='bump'?['bump',t,2,undefined,'auto']:ty==='sand'?['sand',t,0,undefined,'auto']:ty==='ice'?['ice',t,Math.min(.88,t+.05),undefined,'auto']:[ty,t,undefined,undefined,'auto']);}
   return out;}
 function resetObstacles(hd){for(const b of hd.boxes){b.a=b.a0;b.cx=b.cx0;b.cz=b.cz0;b.vx=b.vz=b.w=0;}}
 
@@ -591,17 +621,23 @@ class Phys{
     const {pos,idx}=floorPhysData(hd);
     add(R.ColliderDesc.trimesh(pos,idx,R.TriMeshFlags.FIX_INTERNAL_EDGES).setFriction(.8).setRestitution(.12).setCollisionGroups(grp(G_FLOOR,0xffff)));
     // bordures
+    // murets : même longueur que le muret visible (aucun débord aux extrémités), épaissis seulement vers l'extérieur
+    // pour qu'une balle rapide ne puisse pas les traverser ; les poteaux ronds des extrémités ont le même collider que leur visuel
+    const wallDesc=d=>d.setRestitution(.6).setContactSkin(0).setFriction(0).setFrictionCombineRule(R.CoefficientCombineRule.Min).setRestitutionCombineRule(R.CoefficientCombineRule.Max).setCollisionGroups(OBJ);
+    const postKeys=new Set();
     for(const e of hd.walls){const len=Math.hypot(e.bx-e.ax,e.bz-e.az),horiz=e.nz!==0,bot=Math.max(e.bot,hd.waterY-1),h=e.top+1-bot;
-      // mur physique épais (80 cm vers l'extérieur) : la face intérieure reste sur la bordure, la balle ne peut pas le traverser
       const T=.4,cx=(e.ax+e.bx)/2+e.nx*T,cz=(e.az+e.bz)/2+e.nz*T;
-      add(R.ColliderDesc.cuboid(horiz?len/2+T:T,h/2,horiz?T:len/2+T).setTranslation(cx,bot+h/2,cz).setRestitution(.6).setContactSkin(0).setFriction(0).setFrictionCombineRule(R.CoefficientCombineRule.Min)
-        .setRestitutionCombineRule(R.CoefficientCombineRule.Max).setCollisionGroups(OBJ));}
+      add(wallDesc(R.ColliderDesc.cuboid(horiz?len/2:T,h/2,horiz?T:len/2).setTranslation(cx,bot+h/2,cz)));
+      for(const [ex,ez] of [[e.ax,e.az],[e.bx,e.bz]]){const px=ex+e.nx*WT/2,pz=ez+e.nz*WT/2,key=px.toFixed(2)+','+pz.toFixed(2);if(postKeys.has(key))continue;postKeys.add(key);
+        add(wallDesc(R.ColliderDesc.cylinder(h/2,WT/2).setTranslation(px,bot+h/2,pz)));}}
     // champignons et moyeux
     for(const b of hd.bumpers){const y=hAt(hd,b.x,b.z);add(R.ColliderDesc.cylinder(.3,b.r).setTranslation(b.x,y+.3,b.z).setRestitution(b.e>1?1.35:.55)
       .setRestitutionCombineRule(R.CoefficientCombineRule.Max).setFriction(0).setFrictionCombineRule(R.CoefficientCombineRule.Min).setCollisionGroups(OBJ));}
     // coins de virage (prisme)
     for(const ch of hd.chamfers){const gx=(ch.pts[0][0]+ch.pts[1][0]+ch.pts[2][0])/3,gz=(ch.pts[0][1]+ch.pts[1][1]+ch.pts[2][1])/3,y0=hAt(hd,gx,gz)-.3,y1=y0+.3+WALLH+.05;const v=[];
       for(const [x,z] of ch.pts)v.push(x,y0,z,x,y1,z);const d=R.ColliderDesc.convexHull(new Float32Array(v));if(d)add(d.setRestitution(.7).setFriction(0).setFrictionCombineRule(R.CoefficientCombineRule.Min).setRestitutionCombineRule(R.CoefficientCombineRule.Max).setCollisionGroups(OBJ));}
+    // piliers fixes (arches de moulin, tunnels)
+    for(const s of hd.solids){const y0=hAt(hd,s.cx,s.cz)-.3,h=s.h+.3;add(wallDesc(R.ColliderDesc.cuboid(s.hx,h/2,s.hz).setTranslation(s.cx,y0+h/2,s.cz).setRotation(qy(-s.a))));}
     // ponts
     for(const b of hd.bridges){add(R.ColliderDesc.cuboid(b.hz,.05,b.hx).setTranslation(b.cx,b.y-.056,b.cz).setRotation(qy(Math.atan2(-b.bz,b.bx))).setFriction(.8).setRestitution(.1).setCollisionGroups(grp(G_FLOOR,0xffff)));}
     // tremplins
@@ -624,12 +660,13 @@ class Phys{
     this.inCup=false;this.ray=new R.Ray({x:0,y:0,z:0},{x:0,y:-1,z:0});this.t=0;this.acc=0;
   }
   setObstacles(t){for(const k of this.kins){const s=k.o.motion(t);k.body.setNextKinematicTranslation({x:s.cx,y:k.y,z:s.cz});k.body.setNextKinematicRotation(obstacleQuat(s.a,s.roll));}}
+  // téléporte les obstacles mobiles (sans balayer la piste) : utilisé quand le temps saute
+  resetObstacles(t){this.t=t;for(const k of this.kins){const s=k.o.motion(t);k.body.setTranslation({x:s.cx,y:k.y,z:s.cz},true);k.body.setRotation(obstacleQuat(s.a,s.roll),true);}}
   place(x,y,z){const b=this.body;b.setEnabled(true);b.setTranslation({x,y:y+BR+.005,z},true);b.setLinvel({x:0,y:0,z:0},true);b.setAngvel({x:0,y:0,z:0},true);this.setCup(false);}
   setCup(on){if(on===this.inCup)return;this.inCup=on;this.col.setCollisionGroups(grp(G_BALL,on?(G_CUP|G_OBJ):(G_FLOOR|G_CUP|G_OBJ)));}
   // un pas fixe ; renvoie l'état de la balle
   step(wind){
-    const R=RAPIER,b=this.body,hd=this.hd,dt=this.dt;this.t+=dt;
-    this.setObstacles(this.t);
+    const R=RAPIER,b=this.body,hd=this.hd,dt=this.dt;const t0=this.t;this.t+=dt;
     const p=b.translation(),v=b.linvel();
     const dc=Math.hypot(p.x-hd.cup.x,p.z-hd.cup.z);this.setCup(dc<CR-.015&&p.y<hd.cupH+BR+.08);
     this.ray.origin={x:p.x,y:p.y,z:p.z};
@@ -648,7 +685,9 @@ class Phys{
     if(!(this.pcd>0))for(const po of hd.portals){if(grounded&&Math.hypot(p.x-po.ax,p.z-po.az)<.3){const s=Math.max(2.5,Math.hypot(vx,vz));const nx=po.bx+po.dx*.25,nz=po.bz+po.dz*.25;
       b.setTranslation({x:nx,y:hAt(hd,nx,nz)+BR+.01,z:nz},true);b.setLinvel({x:po.dx*s,y:0,z:po.dz*s},true);this.pcd=.8;this.portal=true;break;}}
     this.pcd=(this.pcd||0)-dt;
-    this.world.step();
+    // sous-pas selon la vitesse : la balle n'avance jamais de plus d'un demi-rayon par sous-pas, elle ne traverse donc aucun obstacle
+    const spd=Math.hypot(b.linvel().x,b.linvel().y,b.linvel().z),nSub=Math.min(10,Math.max(1,Math.ceil(spd*dt/(BR*.5))));this.world.timestep=dt/nSub;
+    for(let i=1;i<=nSub;i++){this.setObstacles(t0+dt*i/nSub);this.world.step();}
     let q=b.translation();let u=b.linvel();
     // filet de sécurité : si la balle a franchi une bordure entre deux pas, on la remet du bon côté et on la fait rebondir
     for(const w of hd.walls){const d0=(p.x-w.ax)*w.nx+(p.z-w.az)*w.nz,d1=(q.x-w.ax)*w.nx+(q.z-w.az)*w.nz;if(!(d0<-.01&&d1>-BR*.5))continue;
@@ -656,7 +695,7 @@ class Phys{
       if(along<a0-BR||along>a1+BR||q.y-BR>w.top+.8)continue;
       const back=d1+BR+.005;q={x:q.x-w.nx*back,y:q.y,z:q.z-w.nz*back};b.setTranslation(q,true);const vn=u.x*w.nx+u.z*w.nz;if(vn>0){u={x:u.x-1.7*vn*w.nx,y:u.y,z:u.z-1.7*vn*w.nz};b.setLinvel(u,true);}break;}
     // tremplin : impulsion vers le haut proportionnelle à la vitesse pour franchir le trou d'eau
-    for(const r of hd.ramps){if(!inRect(r,q.x,q.z))continue;const vd=u.x*r.dx+u.z*r.dz;const lift=Math.min(vd*.55,8);
+    for(const r of hd.ramps){if(!inRect(r,q.x,q.z))continue;const vd=u.x*r.dx+u.z*r.dz;const lift=Math.min(vd*.45,6.5);
       if(vd>2.5&&u.y<lift*.9){u={x:u.x+r.dx*vd*.08,y:lift,z:u.z+r.dz*vd*.08};b.setLinvel(u,true);this.jumped=true;this.jumpT=1.5;}}
     this.jumpT=Math.max(0,(this.jumpT||0)-dt);
     // une bordure ou un coin ne doit jamais faire décoller la balle (seuls les tremplins le peuvent)
@@ -1002,7 +1041,10 @@ function buildScene(hd){
   const dist=new THREE.Sprite(new THREE.SpriteMaterial({map:dTex,depthTest:false,transparent:true,toneMapped:false}));dist.scale.set(1.15,.43,1);dist.position.set(0,2.3,0);dist.renderOrder=9;fgrp.add(dist);anim.dist={spr:dist,cv:dTexC,tex:dTex,v:-1};
   // champignons / butoirs
   for(const b of hd.bumpers){const grp=new THREE.Group();grp.position.set(b.x,hAt(hd,b.x,b.z),b.z);
-    if(b.hub){const m=new THREE.Mesh(GEO.cyl,mat(0x9a9a9a,{metal:true}));m.scale.set(b.r,.6,b.r);m.position.y=.3;m.castShadow=true;grp.add(m);}
+    if(b.hub){// moyeu : poteau rayé avec chapeau doré (même cylindre que le collider)
+      const m=new THREE.Mesh(GEO.cyl,mat(0xf6f1e6,{roughness:.4}));m.scale.set(b.r,.6,b.r);m.position.y=.3;m.castShadow=true;grp.add(m);
+      for(const y of [.12,.34]){const r=new THREE.Mesh(GEO.cyl,mat(W.acc,{roughness:.4}));r.scale.set(b.r+.004,.08,b.r+.004);r.position.y=y;grp.add(r);}
+      const top=new THREE.Mesh(GEO.sph,mat(0xffc933,{metal:true,roughness:.3}));top.scale.set(b.r*1.1,b.r*.7,b.r*1.1);top.position.y=.6;top.castShadow=true;grp.add(top);}
     else{const st=new THREE.Mesh(GEO.cyl,mat(0xf6efe0));st.scale.set(b.r*.8,.34,b.r*.8);st.position.y=.17;st.castShadow=true;grp.add(st);
       const cap=new THREE.Mesh(GEO.sph,mat(W.bump,{roughness:.45,emissive:W.stars?W.bump:0,emissiveIntensity:W.stars?.35:0}));cap.scale.set(b.r*1.08,b.r*.75,b.r*1.08);cap.position.y=.36;cap.castShadow=true;grp.add(cap);
       for(let s=0;s<4;s++){const a=s*1.7+.4,sp2=new THREE.Mesh(GEO.sph,mat(0xffffff));sp2.scale.setScalar(b.r*(s?.17:.2));sp2.position.set(Math.cos(a)*b.r*(s?.72:0),.36+b.r*(s?.55:.75),Math.sin(a)*b.r*(s?.72:0));grp.add(sp2);}}
@@ -1023,6 +1065,10 @@ function buildScene(hd){
       for(const s of [-1,1]){const e=new THREE.Mesh(GEO.box,mat(0xffc933));e.scale.set(.06,o.hy*2+.02,o.hz*2);e.position.set(s*(o.hx-.03),(o.lift||0)+o.hy,0);grp.add(e);}
       grp.position.set(o.cx,hAt(hd,o.cx0,o.cz0),o.cz);grp.rotation.y=-o.a;course.add(grp);anim.boxes.push({o,grp});continue;}
     if(o.kind==='block'||o.kind==='mover'||o.kind==='gate')m=markKenney(kenneyFit('obstacle-block',o.hx*2,o.hy*2,o.hz*2));
+    if(o.kind==='mill'){// bras tournant : barre blanche à bandes colorées, bouts arrondis (même volume que le collider)
+      m=new THREE.Group();const bar=new THREE.Mesh(boxGeo(o.hx*2-o.hz*2,o.hy*2,o.hz*2,.04),mat(0xf6f1e6,{roughness:.45}));bar.position.y=o.hy;bar.castShadow=true;bar.receiveShadow=true;m.add(bar);
+      for(const s of [-1,1]){for(const f of [.3,.62]){const band=new THREE.Mesh(GEO.box,mat(W.acc,{roughness:.45}));band.scale.set(o.hx*.14,o.hy*2+.006,o.hz*2+.006);band.position.set(s*o.hx*f,o.hy,0);m.add(band);}
+        const tip=new THREE.Mesh(GEO.cyl,mat(W.acc,{roughness:.45}));tip.scale.set(o.hz,o.hy*2,o.hz);tip.position.set(s*(o.hx-o.hz),o.hy,0);tip.castShadow=true;m.add(tip);}}
     if(!m){const c=o.kind==='mill'?W.acc:o.kind==='mover'?0xffd447:o.kind==='gate'?0xe8e2d4:0xe8743b;m=new THREE.Mesh(GEO.box,mat(c,{roughness:.55}));m.scale.set(o.hx*2,o.hy*2,o.hz*2);m.position.y=o.hy;m.castShadow=true;m.receiveShadow=true;}
     m.position.y+=(o.lift||0);grp.add(m);
     if(o.kind==='mill'){const hub=new THREE.Mesh(GEO.cyl,mat(0xffffff));hub.scale.set(.06,.06,.06);hub.position.y=(o.lift||0)+o.hy*2+.03;grp.add(hub);}
@@ -1044,10 +1090,19 @@ function buildScene(hd){
   for(const r of hd.ramps){const P=r.pts,v=[];for(const i of [0,1,2,3,4,5])v.push(...P[i]);
     const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));g.setIndex([0,2,1,1,2,3, 2,4,3,3,4,5, 0,4,2, 1,3,5]);g.computeVertexNormals();
     const m=new THREE.Mesh(g,mat(0xf0e6cf,{side:THREE.DoubleSide}));m.castShadow=true;m.receiveShadow=true;course.add(m);
+    // flèches jaunes sur la pente du tremplin
+    const cv=[];for(const i of [0,1,2,3])cv.push(P[i][0],P[i][1]+.006,P[i][2]);const cg2=new THREE.BufferGeometry();cg2.setAttribute('position',new THREE.Float32BufferAttribute(cv,3));
+    cg2.setAttribute('uv',new THREE.Float32BufferAttribute([0,0,0,1,1,0,1,1],2));cg2.setIndex([0,2,1,1,2,3]);const ctex=TEX.chevron.clone();ctex.needsUpdate=true;ctex.repeat.set(2,Math.max(1,r.hx*1.2));
+    course.add(new THREE.Mesh(cg2,new THREE.MeshBasicMaterial({map:ctex,color:0xffc933,transparent:true,opacity:.85,side:THREE.DoubleSide,depthWrite:false})));
     const st=new THREE.Mesh(GEO.box,mat(0xe8483a));st.scale.set(.1,.04,r.hx*2);st.position.set((P[2][0]+P[3][0])/2-r.dx*.05,P[2][1]-.01,(P[2][2]+P[3][2])/2-r.dz*.05);st.rotation.y=-Math.atan2(r.dz,r.dx);course.add(st);}
   // ponts de planches
   const postM=mat(0x6b4a2e);
   for(const b of hd.bridges){const grp=new THREE.Group();grp.position.set(b.cx,b.y,b.cz);grp.rotation.y=-Math.atan2(b.bz,b.bx);
+    if(b.ledge){// haut de muret en pierre, posé sur un mur qui plonge dans l'eau
+      const hh=b.y-wy+1.2,wl=new THREE.Mesh(boxGeo(b.hz*2,hh,b.hx*2,1.2),mat(W.wall,{map:TEX.stone,roughness:.92}));wl.position.y=-hh/2-.04;wl.castShadow=true;wl.receiveShadow=true;grp.add(wl);
+      const top=new THREE.Mesh(GEO.box,mat(new THREE.Color(W.wall).multiplyScalar(1.15),{map:TEX.stone,roughness:.8}));top.scale.set(b.hz*2,.08,b.hx*2);top.position.y=-.04;top.receiveShadow=true;grp.add(top);
+      for(const side of [-1,1]){const tr=new THREE.Mesh(GEO.box,mat(W.acc,{roughness:.6}));tr.scale.set(b.hz*2,.03,.05);tr.position.set(0,-.015,side*(b.hx-.025));grp.add(tr);}
+      course.add(grp);continue;}
     const tex=TEX.planks.clone();tex.needsUpdate=true;tex.repeat.set(b.len/1.2,1);
     const deck=new THREE.Mesh(GEO.box,mat(0xffffff,{map:tex}));deck.scale.set(b.hz*2,.1,b.hx*2);deck.position.y=-.05;deck.castShadow=true;deck.receiveShadow=true;grp.add(deck);
     const beams=new THREE.Mesh(GEO.box,postM);beams.scale.set(b.hz*2,.12,b.hx*2-.12);beams.position.y=-.16;grp.add(beams);
@@ -1055,13 +1110,21 @@ function buildScene(hd){
     course.add(grp);}
   // tunnels : arche Kenney (ou arche simple de secours)
   for(const t of hd.tunnels){const grp=new THREE.Group();grp.position.set(t.cx,hAt(hd,t.cx,t.cz),t.cz);grp.rotation.y=-Math.atan2(t.dz,t.dx);
-    const k=markKenney(kenneyFit('structure-gate',CS*1.2,t.r*1.3,t.r*2+.3));
-    if(k){k.rotation.y=Math.PI/2;grp.add(k);}
-    else{const shell=new THREE.Mesh(new THREE.CylinderGeometry(t.r,t.r,CS*1.4,28,1,true,0,Math.PI),mat(W.wall,{map:TEX.stone,side:THREE.DoubleSide}));shell.rotation.z=Math.PI/2;shell.castShadow=true;grp.add(shell);}
+    // arche de pierre : deux piliers (les mêmes que les colliders) + voûte + toit
+    const posts=hd.solids.filter(s=>s.kind==='tpost'&&Math.hypot(s.cx-t.cx,s.cz-t.cz)<t.r+1);const sm=mat(W.wall,{map:TEX.stone,roughness:.9}),trimM=mat(W.acc,{roughness:.6});
+    const span=posts.length===2?Math.hypot(posts[0].cx-posts[1].cx,posts[0].cz-posts[1].cz)/2:t.r,ph=posts.length?posts[0].h:1.5;
+    for(const s of [-1,1]){const pil=new THREE.Mesh(boxGeo(.64,ph+.05,.4,1.2),sm);pil.position.set(0,(ph+.05)/2-.05,s*span);pil.castShadow=true;pil.receiveShadow=true;grp.add(pil);
+      const capP=new THREE.Mesh(boxGeo(.74,.12,.5,1.2),trimM);capP.position.set(0,ph+.03,s*span);grp.add(capP);}
+    const vault=new THREE.Mesh(new THREE.TorusGeometry(span,.2,10,28,Math.PI),sm);vault.position.y=ph;vault.rotation.y=Math.PI/2;vault.scale.z=1.6;vault.castShadow=true;grp.add(vault);
+    const ridge=new THREE.Mesh(new THREE.TorusGeometry(span+.2,.07,8,28,Math.PI),trimM);ridge.position.y=ph;ridge.rotation.y=Math.PI/2;grp.add(ridge);
+    const key=new THREE.Mesh(boxGeo(.5,.36,.3,1.2),trimM);key.position.y=ph+span+.12;grp.add(key);
     course.add(grp);}
   // portails
   for(const p of hd.portals){for(const [x,z,c] of [[p.ax,p.az,0x3ee0ff],[p.bx,p.bz,0xff8a3d]]){const m=new THREE.Mesh(GEO.torus,new THREE.MeshBasicMaterial({color:c}));m.rotation.x=-Math.PI/2;m.position.set(x,hAt(hd,x,z)+.05,z);course.add(m);
-      const d=new THREE.Mesh(new THREE.CircleGeometry(.3,24),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.35}));d.rotation.x=-Math.PI/2;d.position.set(x,hAt(hd,x,z)+.02,z);course.add(d);anim.portals.push(m);}}
+      const d=new THREE.Mesh(new THREE.CircleGeometry(.3,24),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.35}));d.rotation.x=-Math.PI/2;d.position.set(x,hAt(hd,x,z)+.02,z);course.add(d);anim.portals.push(m);
+      // colonne de lumière + anneau de pierre autour du portail
+      const beam=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,1.6,28,1,true),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));beam.position.set(x,hAt(hd,x,z)+.8,z);course.add(beam);
+      const rim=new THREE.Mesh(new THREE.TorusGeometry(.52,.06,8,32),mat(0x2a2f3a,{metal:true,emissive:c,emissiveIntensity:.25}));rim.rotation.x=-Math.PI/2;rim.scale.z=.3;rim.position.set(x,hAt(hd,x,z)+.008,z);course.add(rim);}}
   // décor : grandes îles proches (palmiers, rochers, fleurs) ou immeubles
   const {x0,z0,x1,z1}=hd.bbox;const islets=[];
   const nearCourse=(x,z,m)=>{for(const c of hd.cells.values()){const dx=Math.max(c.i*CS-x,0,x-(c.i+1)*CS),dz=Math.max(c.j*CS-z,0,z-(c.j+1)*CS);if(Math.hypot(dx,dz)<m)return true;}return false;};
@@ -1722,23 +1785,28 @@ function updateVisuals(dt,t){
 
 // ===================== Robot de test : vérifie que chaque trou est faisable =====================
 // Joue chaque trou avec le vrai moteur physique en cherchant à chaque coup le meilleur tir parmi un éventail d'angles et de puissances.
-function botProgress(hd,x,z,y){const c=cellAt(hd,x,z);if(!c||c.t==='w'||y<hd.waterY)return 1e9;const L=hd.L,k=c.own;
+function botProgress(hd,x,z,y){const c=cellAt(hd,x,z),L=hd.L;let k;
+  // sur un pont ou le chemin de ronde : progression = case du tracé la plus proche
+  const br=hd.bridges.find(b=>inRect(b,x,z)&&Math.abs(y-b.y)<.35);
+  if(br){let bd=1e9;for(let q=Math.max(0,br.k-4);q<Math.min(L,br.k+12);q++){const d=Math.hypot((hd.path[q][0]+.5)*CS-x,(hd.path[q][1]+.5)*CS-z);if(d<bd){bd=d;k=q;}}}
+  else{if(!c||c.t==='w'||y<hd.waterY)return 1e9;k=c.own;}
   return (L-1-k)*CS+Math.hypot(x-hd.cup.x,z-hd.cup.z)*.6;}
-function botShot(ph,hd,pos,ang,p){ph.place(pos.x,pos.y,pos.z);ph.t=0;const v=powerCurve(p)*MAXV;ph.body.setLinvel({x:Math.cos(ang)*v,y:0,z:Math.sin(ang)*v},true);ph.body.wakeUp();
+function botShot(ph,hd,pos,ang,p){ph.place(pos.x,pos.y,pos.z);ph.resetObstacles(0);const v=powerCurve(p)*MAXV;ph.body.setLinvel({x:Math.cos(ang)*v,y:0,z:Math.sin(ang)*v},true);ph.body.wakeUp();
   let still=0;for(let i=0;i<60*9;i++){const r=ph.step(windNow(hd,ph.t));const dc=Math.hypot(r.x-hd.cup.x,r.z-hd.cup.z);
     if(dc<CR-.02&&r.y+BR<hd.cupH-BR*.15)return{st:'in',x:r.x,y:r.y,z:r.z};
     if(r.y<hd.waterY-.1)return{st:'haz'};
     if(r.grounded&&Math.hypot(r.vx,r.vz)<.07&&Math.abs(r.vy)<.12){if((still+=ph.dt)>.3)return{st:'stop',x:r.x,y:r.y,z:r.z};}else still=0;}
   const q=ph.body.translation();return{st:'stop',x:q.x,y:q.y-BR,z:q.z};}
-function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non chargé'};const hd=buildHole(idx);const ph=new Phys(hd,1/60);
+const yieldNow=()=>new Promise(r=>{const ch=new MessageChannel();ch.port1.onmessage=()=>r();ch.port2.postMessage(0);});
+async function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non chargé'};const hd=buildHole(idx);const ph=new Phys(hd,1/60);
   let pos={x:hd.tee.x,z:hd.tee.z,y:hAt(hd,hd.tee.x,hd.tee.z)};const log=[];
   try{for(let s=1;s<=maxStrokes;s++){let best=null;const base=botProgress(hd,pos.x,pos.z,pos.y);
       const toCup=Math.atan2(hd.cup.z-pos.z,hd.cup.x-pos.x);
       // angles : un tour complet grossier + un balayage fin vers la suite du tracé (ponts, passages étroits)
       const cc=cellAt(hd,pos.x,pos.z),kc=cc?cc.own:0,angs=[];for(let a=0;a<24;a++)angs.push(a/24*Math.PI*2);
       for(const ahead of [3]){const tp=hd.path[Math.min(hd.L-1,kc+ahead)],ta=Math.atan2((tp[1]+.5)*CS-pos.z,(tp[0]+.5)*CS-pos.x);for(let d=-24;d<=24;d+=3)angs.push(ta+d*Math.PI/180);}
-      for(const ang of angs)for(const p of [.15,.3,.45,.6,.8,1]){const r=botShot(ph,hd,pos,ang,p);
-        if(r.st==='in'){best={r,ang,p,sc:-1};break;}if(r.st==='haz')continue;const sc=botProgress(hd,r.x,r.z,r.y);if(!best||sc<best.sc)best={r,ang,p,sc};}
+      for(const ang of angs){await yieldNow();for(const p of [.15,.3,.45,.6,.8,1]){const r=botShot(ph,hd,pos,ang,p);
+        if(r.st==='in'){best={r,ang,p,sc:-1};break;}if(r.st==='haz')continue;const sc=botProgress(hd,r.x,r.z,r.y);if(!best||sc<best.sc)best={r,ang,p,sc};}}
       // putts fins vers le trou quand il est proche
       if(best&&best.sc>=0&&Math.hypot(pos.x-hd.cup.x,pos.z-hd.cup.z)<6)for(let da=-.12;da<=.121;da+=.03)for(let p=.08;p<=.6;p+=.02){const r=botShot(ph,hd,pos,toCup+da,p);if(r.st==='in'){best={r,ang:toCup+da,p,sc:-1};break;}}
       if(!best)return{idx,ok:false,log:log.concat('aucun tir valable')};
@@ -1750,7 +1818,7 @@ function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non chargé'}
   finally{ph.free();}}
 
 // accès de débogage depuis la console (le script est un module)
-Object.assign(window,{hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
+Object.assign(window,{botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
 for(const [k,g] of Object.entries({H:()=>H,PH:()=>PH,RAPIER:()=>RAPIER,simT:()=>simT}))Object.defineProperty(window,k,{get:g,configurable:true});
 
 // ===================== Démarrage =====================
