@@ -102,7 +102,7 @@ input[type=text]:focus,select:focus{border-color:var(--sun)}
 #timer span{font-size:12px;font-weight:800;color:var(--paper)}
 #timer.urgent b{animation:pulse .5s infinite alternate}
 @keyframes pulse{to{transform:scale(1.15)}}
-#power{bottom:62px;left:50%;transform:translateX(-50%);width:min(440px,84vw);display:flex;align-items:center;gap:14px;padding:10px 16px;box-sizing:border-box}
+#power{bottom:62px;left:16px;width:min(400px,calc(100vw - 32px));display:flex;align-items:center;gap:14px;padding:10px 16px;box-sizing:border-box}
 .pw-l{font-size:11px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)}
 .pw-bar{position:relative;flex:1;height:18px;border-radius:999px;background:rgba(0,0,0,.35);box-shadow:inset 0 2px 4px rgba(0,0,0,.5);overflow:hidden}
 .pw-bar::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#46b45a,#ffd447 55%,#ff5b47);opacity:.16}
@@ -111,6 +111,9 @@ input[type=text]:focus,select:focus{border-color:var(--sun)}
 .pw-bar i{position:absolute;top:3px;bottom:3px;width:2px;background:rgba(255,255,255,.35);border-radius:1px}
 #powerPct{font:700 24px var(--display);min-width:58px;text-align:right;font-variant-numeric:tabular-nums}
 #power.max #powerPct{color:var(--flag);animation:pulse .25s infinite alternate}
+#power.idle #powerFill{opacity:.5;box-shadow:none}#power.idle #powerFill::after{display:none}#power.idle #powerPct{color:var(--muted)}
+#pwLast{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.45);border-radius:2px;z-index:2}
+.pw-l small{display:block;margin-top:2px;font-size:10px;letter-spacing:.4px;text-transform:none;font-weight:700;color:var(--muted);white-space:nowrap}
 #hint{bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:700;color:var(--muted);padding:8px 14px;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
 #hint kbd{font:800 11px var(--body);background:rgba(255,255,255,.12);border-radius:5px;padding:2px 6px;color:var(--paper)}
 #btnPause{bottom:16px;left:16px;pointer-events:auto;padding:10px 14px;font:700 16px var(--display);letter-spacing:.5px}
@@ -153,7 +156,7 @@ table.scard{border-collapse:collapse;font-variant-numeric:tabular-nums;min-width
 .ld-bar i{display:block;height:100%;width:38%;border-radius:9px;background:linear-gradient(90deg,var(--turf),var(--sun));animation:ldx 1.1s ease-in-out infinite}
 @keyframes ldx{from{transform:translateX(-110%)}to{transform:translateX(290%)}}
 #ldTip{font:700 14px var(--body);color:var(--muted);max-width:340px;text-align:center;letter-spacing:0}
-@media (max-width:700px){#board{top:auto;bottom:60px;right:16px;width:200px}.hud-wind{top:auto;bottom:60px;left:16px;right:auto}#hint{display:none}}
+@media (max-width:700px){#board{top:auto;bottom:60px;right:16px;width:200px}.hud-wind{top:auto;bottom:126px;left:16px;right:auto}#hint{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -208,7 +211,7 @@ table.scard{border-collapse:collapse;font-variant-numeric:tabular-nums;min-width
   <div class="glass hud-wind"><div class="compass"><i id="windArrow"></i></div><div class="wind-v"><b id="windKmh">0 km/h</b><span id="windLbl">Vent</span></div></div>
   <div class="glass" id="board"></div>
   <div class="glass" id="timer" hidden><b id="timerS">25</b><span id="timerTxt">secondes avant +5 coups</span></div>
-  <div class="glass" id="power" hidden><span class="pw-l">Puissance</span><div class="pw-bar" id="pwBar"><div id="powerFill"></div><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><b id="powerPct">0%</b></div>
+  <div class="glass idle" id="power"><span class="pw-l">Puissance<small id="pwLastTxt">Dernier coup : —</small></span><div class="pw-bar" id="pwBar"><div id="powerFill"></div><i id="pwLast" hidden></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><b id="powerPct">0%</b></div>
   <div class="glass" id="hint"><kbd>Clic sur la balle</kbd> tirer en arrière puis lâcher · <kbd>Clic droit</kbd>/<kbd>Échap</kbd> annuler · <kbd>Glisser ailleurs</kbd> tourner à 360° · <kbd>Molette</kbd> zoom · <kbd>C</kbd> vue d'ensemble</div>
   <button class="glass" id="btnPause">Menu</button>
 </div>
@@ -264,7 +267,7 @@ const ARTIFACT_URL = '';
 // ===================== Constantes =====================
 const CS = 3;            // taille d'une case du parcours (1 unité = 1 m)
 // taille de chaque trou : P = petit (tracé x1), M = moyen (x2), G = grand (x3) ; même motif dans chaque monde
-const SIZE_PATTERN = "PMPGPMGPMG", SIZE_SCALE = {P:1,M:2,G:3}, SIZE_NAME = {P:"Petit",M:"Moyen",G:"Grand"};
+const SIZE_PATTERN = "MMGGMMGGMG", SIZE_SCALE = {P:1,M:2,G:3}, SIZE_NAME = {P:"Petit",M:"Moyen",G:"Grand"};
 const BR = 0.095;        // rayon de la balle (plus petite)
 const CR = 0.25;         // rayon du trou
 const CUPD = 0.34;       // profondeur du trou
@@ -360,7 +363,8 @@ const HOLES = [
 ];
 
 // taille de chaque trou (le par est fixé à la main, de 2 à 5)
-HOLES.forEach((h,i)=>{h.size=SIZE_PATTERN[i%10];});
+// plus de petits trous : les anciens petits deviennent moyens (1er et 5e du monde) ou grands (3e et 8e, par +1)
+HOLES.forEach((h,i)=>{h.size=SIZE_PATTERN[i%10];if(i%10===2||i%10===7)h.par=Math.min(5,h.par+1);});
 
 // ===================== Utilitaires =====================
 const $ = id => document.getElementById(id);
@@ -1507,15 +1511,19 @@ canvas.addEventListener('lostpointercapture',()=>{rot=null;});
 canvas.addEventListener('wheel',e=>{e.preventDefault();cam.dist=clamp(cam.dist*(e.deltaY>0?1.1:.9),2,34);},{passive:false});
 // relâchement : le tir part tout de suite
 // relâchement : la balle tirée en arrière est catapultée vers l'avant
-function release(){if(!aim.on)return;aim.on=false;if(aim.p<.04||!canShoot())return;snapT=.12;shoot(aim.dx,aim.dz,aim.p);}
+function release(){if(!aim.on)return;aim.on=false;if(aim.p<.04||!canShoot())return;snapT=.12;lastPow=aim.p;showLastPow();shoot(aim.dx,aim.dz,aim.p);}
+// jauge fixe : la puissance du dernier coup reste affichée (barre atténuée + repère blanc)
+let lastPow=-1;
+function showLastPow(){const has=lastPow>=0;$('pwLast').hidden=!has;if(has)$('pwLast').style.left=(lastPow*100).toFixed(1)+'%';$('pwLastTxt').textContent='Dernier coup : '+(has?Math.round(lastPow*100)+'%':'–');}
 let lastChargeTick=-1;
 const PULL_MAX=.6; // recul visuel maximal de la balle dans la catapulte (m)
 function updateAim(dt,t){
   const show=aim.on&&canShoot();
   // la balle recule avec la charge puis revient d'un coup sec au tir
   if(show)pullVis=aim.p*PULL_MAX;else if(snapT>0){snapT-=dt;pullVis=0;}else pullVis=0;
-  if(!show){aimDots.visible=false;aimRing.visible=aimRing2.visible=false;$('power').hidden=true;lastChargeTick=-1;return;}
-  const p=aim.p;$('power').hidden=false;
+  if(!show){aimDots.visible=false;aimRing.visible=aimRing2.visible=false;lastChargeTick=-1;
+    if(!$('power').classList.contains('idle')){const q=Math.max(0,lastPow);$('power').classList.add('idle');$('power').classList.remove('max');$('powerFill').style.width=(q*100).toFixed(1)+'%';$('powerPct').textContent=lastPow>=0?Math.round(q*100)+'%':'0%';}return;}
+  const p=aim.p;$('power').classList.remove('idle');
   // jauge : vert → jaune → rouge
   $('powerFill').style.width=(p*100).toFixed(1)+'%';$('powerFill').style.setProperty('--bw',$('pwBar').clientWidth+'px');
   $('powerPct').textContent=Math.round(p*100)+'%';$('power').classList.toggle('max',p>=.99);
