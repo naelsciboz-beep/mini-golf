@@ -1025,7 +1025,7 @@ function buildScene(hd){
     const mx=(w.ax+w.bx)/2+w.nx*WT/2,mz=(w.az+w.bz)/2+w.nz*WT/2;
     const m=new THREE.Mesh(boxGeo(horiz?len:WT,h,horiz?WT:len,1.2),stoneM);m.position.set(mx,bot+h/2,mz);m.castShadow=true;m.receiveShadow=true;course.add(m);anim.walls.push(m);
     const cg=new THREE.CylinderGeometry(WT/2,WT/2,len,16,1);const cuv=cg.attributes.uv;for(let i=0;i<cuv.count;i++)cuv.setXY(i,cuv.getX(i)*.6,cuv.getY(i)*len/1.2);
-    const cap=new THREE.Mesh(cg,capM);if(horiz)cap.rotation.z=Math.PI/2;else cap.rotation.x=Math.PI/2;cap.position.set(mx,top-WT/2,mz);cap.castShadow=true;cap.receiveShadow=true;course.add(cap);
+    const cap=new THREE.Mesh(cg,capM);if(horiz)cap.rotation.z=Math.PI/2;else cap.rotation.x=Math.PI/2;cap.position.set(mx,top-WT/2,mz);cap.castShadow=true;cap.receiveShadow=true;course.add(cap);anim.walls.push(cap);
     for(const [ex,ez] of [[w.ax,w.az],[w.bx,w.bz]]){const px=ex+w.nx*WT/2,pz=ez+w.nz*WT/2,key=px.toFixed(2)+','+pz.toFixed(2);if(posts.has(key))continue;posts.add(key);
       const pb=new THREE.Mesh(GEO.cyl,stoneM);pb.scale.set(WT/2,h,WT/2);pb.position.set(px,bot+h/2,pz);pb.castShadow=true;course.add(pb);
       const ps=new THREE.Mesh(GEO.sph,capM);ps.scale.setScalar(WT/2);ps.position.set(px,top-WT/2,pz);course.add(ps);}}
@@ -1451,11 +1451,19 @@ const cam={yaw:0,pitch:.3,dist:4.6,overview:false,intro:1,from:null,demo:0};
 const PITCH_MIN=.06,PITCH_MAX=1.5;
 function camOverPose(){const b=H.bbox;return{tx:b.cx,ty:H.cupH,tz:b.cz,yaw:cam.yaw,pitch:1.05,dist:b.size*.85+6};}
 function resetCamYaw(){const dx=H.cup.x-ball.x,dz=H.cup.z-ball.z;cam.yaw=Math.atan2(-dx,-dz);}
-// la caméra se rapproche si un muret se trouve entre elle et la balle
+// muret entre la caméra et la balle : la caméra monte pour regarder par-dessus (au lieu de se coller à la balle),
+// en douceur ; elle ne se rapproche qu'en dernier recours et jamais à moins de 2 m
 const camRay=new THREE.Raycaster(),_cv=new THREE.Vector3(),_ct=new THREE.Vector3();
-function applyCam(p,avoid){const cp=Math.cos(p.pitch);let dist=p.dist;
-  if(avoid&&anim.walls&&anim.walls.length){_ct.set(p.tx,p.ty+.15,p.tz);_cv.set(Math.sin(p.yaw)*cp,Math.sin(p.pitch),Math.cos(p.yaw)*cp);camRay.set(_ct,_cv);camRay.far=dist;const hit=camRay.intersectObjects(anim.walls,false)[0];if(hit)dist=Math.max(.6,hit.distance-.25);}
-  let x=p.tx+Math.sin(p.yaw)*cp*dist,y=p.ty+Math.sin(p.pitch)*dist,z=p.tz+Math.cos(p.yaw)*cp*dist;
+const camAvoid={pitch:0,dist:0};
+function camBlocked(p,pitch,dist){const cp=Math.cos(pitch);_ct.set(p.tx,p.ty+BR,p.tz);_cv.set(Math.sin(p.yaw)*cp,Math.sin(pitch),Math.cos(p.yaw)*cp);camRay.set(_ct,_cv);camRay.far=dist;return camRay.intersectObjects(anim.walls,false)[0];}
+function applyCam(p,avoid,dt){let pitch=p.pitch,dist=p.dist;
+  if(avoid&&anim.walls&&anim.walls.length){let addP=0,addD=0;
+    if(camBlocked(p,pitch,dist)){addP=PITCH_MAX-pitch;for(let a=.06;a<=1.2;a+=.06)if(!camBlocked(p,Math.min(PITCH_MAX,pitch+a),dist)){addP=a;break;}
+      const h=camBlocked(p,Math.min(PITCH_MAX,pitch+addP),dist);if(h)addD=Math.max(2,h.distance-.25)-dist;}
+    const k=Math.min(1,(dt||.016)*(addP>camAvoid.pitch?8:2.5));camAvoid.pitch+=(addP-camAvoid.pitch)*k;camAvoid.dist+=(addD-camAvoid.dist)*k;
+    pitch=Math.min(PITCH_MAX,pitch+camAvoid.pitch);dist=dist+camAvoid.dist;}
+  const cp=Math.cos(pitch);
+  let x=p.tx+Math.sin(p.yaw)*cp*dist,y=p.ty+Math.sin(pitch)*dist,z=p.tz+Math.cos(p.yaw)*cp*dist;
   if(shake>0){const s=shake*shake*.12;x+=(Math.random()-.5)*s;y+=(Math.random()-.5)*s;z+=(Math.random()-.5)*s;}
   camera.position.set(x,y,z);camera.lookAt(p.tx,p.ty,p.tz);}
 function lerpPose(a,b,t){const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;let dy=b.yaw-a.yaw;while(dy>Math.PI)dy-=6.283;while(dy<-Math.PI)dy+=6.283;
@@ -1467,7 +1475,7 @@ function updateCamera(dt){
   const k=Math.min(1,dt*6);cur.tx+=(ball.x-cur.tx)*k;cur.ty+=(Math.max(ball.y,H.waterY+.5)-cur.ty)*k;cur.tz+=(ball.z-cur.tz)*k;
   const follow={tx:cur.tx,ty:cur.ty,tz:cur.tz,yaw:cam.yaw,pitch:cam.pitch,dist:cam.dist};
   if(cam.intro<1){cam.intro=Math.min(1,cam.intro+dt/2.2);applyCam(lerpPose(cam.from,follow,cam.intro));return;}
-  applyCam(cam.overview?camOverPose():follow,!cam.overview);
+  applyCam(cam.overview?camOverPose():follow,!cam.overview,dt);
 }
 const keys={};
 const aim={on:false,p:0,dx:0,dz:0,kb:false,pull:{x:0,z:0}};let rot=null;
@@ -1494,7 +1502,7 @@ function groundPoint(cx,cy){const r=canvas.getBoundingClientRect();ndc.set((cx-r
   const dx=hitP.x-ball.x,dz=hitP.z-ball.z,d=Math.hypot(dx,dz);if(d>MAXPULL*3){hitP.x=ball.x+dx/d*MAXPULL*3;hitP.z=ball.z+dz/d*MAXPULL*3;}return hitP;}
 function nearBall(cx,cy){const v=new THREE.Vector3(ball.x,ball.y+BR,ball.z).project(camera);const r=canvas.getBoundingClientRect();
   const sx=(v.x+1)/2*r.width+r.left,sy=(1-v.y)/2*r.height+r.top;const edge=new THREE.Vector3(ball.x,ball.y+BR*2,ball.z).project(camera);const pr=Math.abs((edge.y-v.y)/2*r.height);
-  return Math.hypot(cx-sx,cy-sy)<Math.max(34,pr*3);}
+  return Math.hypot(cx-sx,cy-sy)<Math.max(70,pr*5);}
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 canvas.addEventListener('pointerdown',e=>{SFX.init();canvas.focus();
   if(S.mode==='play'&&cam.intro<1)cam.intro=1;
@@ -1826,8 +1834,8 @@ async function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non cha
   finally{ph.free();}}
 
 // accès de débogage depuis la console (le script est un module)
-Object.assign(window,{botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
-for(const [k,g] of Object.entries({H:()=>H,PH:()=>PH,RAPIER:()=>RAPIER,simT:()=>simT}))Object.defineProperty(window,k,{get:g,configurable:true});
+Object.assign(window,{camAvoid,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
+for(const [k,g] of Object.entries({anim:()=>anim,H:()=>H,PH:()=>PH,RAPIER:()=>RAPIER,simT:()=>simT}))Object.defineProperty(window,k,{get:g,configurable:true});
 
 // ===================== Démarrage =====================
 (function init(){
