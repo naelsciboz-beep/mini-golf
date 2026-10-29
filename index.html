@@ -491,12 +491,12 @@ colormap:'iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAMAAADDpiTIAAADAFBMVEUAAABPUmDzePCGi6
 const ARTIFACT_URL = '';
 
 // ===================== Constantes =====================
-const CS = 3;            // taille d'une case du parcours (1 unité = 1 m)
+const CS = 4.5;          // taille d'une case du parcours (1 unité = 1 m) : pistes larges
 // taille de chaque trou : P = petit (tracé x1), M = moyen (x2), G = grand (x3) ; même motif dans chaque monde
 const SIZE_PATTERN = "MMGGMMGGMG", SIZE_SCALE = {P:1,M:2,G:3}, SIZE_NAME = {P:"Petit",M:"Moyen",G:"Grand"};
-const BR = 0.19;         // rayon de la balle (x2 : tout est plus gros sur la piste)
-const CR = 0.4;          // rayon du trou
-const CUPD = 0.5;        // profondeur du trou
+const BR = 0.12;         // rayon de la balle
+const CR = 0.27;         // rayon du trou
+const CUPD = 0.38;       // profondeur du trou
 const MAXV = 30;         // vitesse max d'un tir
 const MAXPULL = 3.0;     // distance de tir maximale (m) pour 100 %
 const GRAV = 12;
@@ -735,7 +735,7 @@ function buildHole(idx){
       const g0=best.gap[0],g1=best.gap[best.gap.length-1];const sx=(g0[0]+.5-best.dx*.5)*CS,sz=(g0[1]+.5-best.dz*.5)*CS,ex=(g1[0]+.5+best.dx*.5)*CS,ez=(g1[1]+.5+best.dz*.5)*CS;
       const len=Math.hypot(ex-sx,ez-sz),bx=(ex-sx)/len,bz=(ez-sz)/len;
       // variante « pad » : pas de pont, un pad rouge au bord pour sauter par-dessus l'eau (raccourci risqué)
-      if(f[2]==='pad')hd.pads.push({x:sx-bx*1.3,z:sz-bz*1.3,r:.7,trap:false});
+      if(f[2]==='pad')hd.pads.push({x:sx-bx*1.3,z:sz-bz*1.3,r:.48,trap:false});
       else hd.bridges.push({k:k1,cx:(sx+ex)/2,cz:(sz+ez)/2,hx:.5,hz:len/2+.25,a:Math.atan2(bx,-bz),bx,bz,len,shortcut:true});}
     else if(ty==='ledge'){// chemin de ronde : longer le haut d'un muret étroit, vide à gauche et à droite, un virage, puis on tombe sur la suite plus bas
       const n=2,kt=kAt(f[1]);let best=-1;
@@ -805,9 +805,9 @@ function buildHole(idx){
         motion:t=>{const q=phi(t);return{cx:H0[0]-p[0]*Wd/2*Math.cos(q),cz:H0[1]-p[1]*Wd/2*Math.cos(q),a,roll:q,dy:-(Wd/2)*Math.sin(q)};}});}
     // ---------- autres mécaniques ----------
     else if(ty==='pad'||ty==='padtrap'){// pad rouge : saut en arc selon la vitesse ; le piège est près d'un bord ouvert
-      const k=kAt(f[1]);mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),off=ty==='padtrap'?(Wd/2-.65)*(f[2]||1):0;hd.pads.push({x:c[0]+p[0]*off,z:c[1]+p[1]*off,r:.7,trap:ty==='padtrap'});}
+      const k=kAt(f[1]);mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),off=ty==='padtrap'?(Wd/2-.5)*(f[2]||1):0;hd.pads.push({x:c[0]+p[0]*off,z:c[1]+p[1]*off,r:.48,trap:ty==='padtrap'});}
     else if(ty==='padup'){// pad devant une marche haute : seul un saut bien dosé monte sur le plateau
-      const k=straight(f[1],2,2);if(k<0){hd.miss.push(ty);continue;}mark(k-2,k+2);const c=crossC(k);hd.pads.push({x:c[0],z:c[1],r:.75,up:true});levelDrops.set(k+1,-(f[2]||.6));padupKs.add(k+1);}
+      const k=straight(f[1],2,2);if(k<0){hd.miss.push(ty);continue;}mark(k-2,k+2);const c=crossC(k);hd.pads.push({x:c[0],z:c[1],r:.52,up:true});levelDrops.set(k+1,-(f[2]||.6));padupKs.add(k+1);}
     else if(ty==='pipe'){// tuyau : on rentre dedans et on ressort plus loin sur le parcours
       const k1=kAt(f[1]),k2=kAt(f[2]);mark(k1,k1);mark(k2,k2);const c1=crossC(k1),p1=perp(k1),W1=crossW(k1),side=(f[3]||(rng()<.5?-1:1)),off=Math.max(0,W1/2-.8);const c2=crossC(k2),d2=dirAt(k2);
       hd.portals.push({ax:c1[0]+p1[0]*side*off,az:c1[1]+p1[1]*side*off,bx:c2[0],bz:c2[1],dx:d2[0],dz:d2[1],pipe:true});}
@@ -823,7 +823,7 @@ function buildHole(idx){
     else if(ty==='climb'){// rampe raide à monter : trop doux on redescend, trop fort on passe par-dessus le plateau
       const k=straight(f[1],sp.w,sp.w+1);if(k<0){hd.miss.push(ty);continue;}mark(k-sp.w,k+sp.w);levelRamps.set(k,f[2]||1.6);}
     else if(ty==='pen'){// enclos en planches autour du trou : on entre par les passages en arche (un par côté) ou les petits jours aux coins
-      const S2=Math.min(3.4,sp.w*CS*.55),gap=.95,cx=hd.cup.x,cz=hd.cup.z,T=.14,H2=.55,rot=f[1]||0;hd.penArches=hd.penArches||[];
+      const S2=Math.min(5.2,sp.w*CS*.6),gap=1.1,cx=hd.cup.x,cz=hd.cup.z,T=.24,H2=.8,rot=f[1]||0;hd.penArches=hd.penArches||[];
       for(let s=0;s<4;s++){const a=rot+s*Math.PI/2,nx=Math.cos(a),nz=Math.sin(a),tx=-nz,tz=nx,seg=(S2-gap)/2-.12;
         for(const q of [-1,1]){const m=q*(gap/2+seg/2);hd.solids.push({kind:'pen',cx:cx+nx*S2/2+tx*m,cz:cz+nz*S2/2+tz*m,hx:T,hz:seg/2,h:H2,a:a});}
         hd.penArches.push({cx:cx+nx*S2/2,cz:cz+nz*S2/2,a,gap,T,H2});}}
@@ -1974,7 +1974,7 @@ const dots=[];for(let i=0;i<40;i++){const d=new THREE.Mesh(GEO.sph,dotMat.clone(
 const ringPts=[];for(let i=0;i<=64;i++){const a=i/64*Math.PI*2;ringPts.push(new THREE.Vector3(Math.cos(a)*.55,0,Math.sin(a)*.85));}
 const aimRing=new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts),new THREE.LineDashedMaterial({color:0xffffff,dashSize:.09,gapSize:.07,depthTest:false,toneMapped:false,linewidth:2}));aimRing.computeLineDistances();aimRing.renderOrder=6;aimRing.visible=false;scene.add(aimRing);
 const aimRing2=aimRing.clone();aimRing2.scale.setScalar(1.02);scene.add(aimRing2);
-const myRing=new THREE.Mesh(new THREE.RingGeometry(.3,.38,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8,depthWrite:false}));myRing.rotation.x=-Math.PI/2;scene.add(myRing);
+const myRing=new THREE.Mesh(new THREE.RingGeometry(.2,.25,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8,depthWrite:false}));myRing.rotation.x=-Math.PI/2;scene.add(myRing);
 const swing={on:false};
 // debug F3 : affiche les colliders Rapier en fil de fer pour vérifier qu'ils collent aux murs
 const dbgLines=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({vertexColors:true,depthTest:false,toneMapped:false,transparent:true}));dbgLines.renderOrder=20;dbgLines.frustumCulled=false;dbgLines.visible=false;scene.add(dbgLines);let dbgOn=false;
@@ -2160,7 +2160,7 @@ function updateBall(dt){
 }
 
 // ===================== Caméra 360° & commandes =====================
-const cam={yaw:0,pitch:.3,dist:4.6,overview:false,intro:1,from:null,demo:0,speedZoom:0,flyYaw:null};
+const cam={yaw:0,pitch:.3,dist:5.4,overview:false,intro:1,from:null,demo:0,speedZoom:0,flyYaw:null};
 const PITCH_MIN=.06,PITCH_MAX=1.5;
 function camOverPose(){const b=H.bbox;return{tx:b.cx,ty:H.cupH,tz:b.cz,yaw:cam.yaw,pitch:1.05,dist:b.size*.85+6};}
 function resetCamYaw(){const dx=H.cup.x-ball.x,dz=H.cup.z-ball.z;cam.yaw=Math.atan2(-dx,-dz);}
@@ -2168,13 +2168,14 @@ function resetCamYaw(){const dx=H.cup.x-ball.x,dz=H.cup.z-ball.z;cam.yaw=Math.at
 // en douceur ; elle ne se rapproche qu'en dernier recours et jamais à moins de 2 m
 const camRay=new THREE.Raycaster(),_cv=new THREE.Vector3(),_ct=new THREE.Vector3();
 const camAvoid={pitch:0,dist:0};
-function camBlocked(p,pitch,dist){const cp=Math.cos(pitch);_ct.set(p.tx,p.ty+BR,p.tz);_cv.set(Math.sin(p.yaw)*cp,Math.sin(pitch),Math.cos(p.yaw)*cp);camRay.set(_ct,_cv);camRay.far=dist;return camRay.intersectObjects(anim.walls,false)[0];}
+function camBlocked(p,pitch,dist){const cp=Math.cos(pitch);_ct.set(p.tx,p.ty+BR,p.tz);_cv.set(p.tx+Math.sin(p.yaw)*cp*dist,p.ty+Math.sin(pitch)*dist,p.tz+Math.cos(p.yaw)*cp*dist).sub(_ct);const L=_cv.length();_cv.normalize();camRay.set(_ct,_cv);camRay.far=L+.3;const h=camRay.intersectObjects(anim.walls,false)[0];if(h)h.distance*=dist/L;return h;}
 function applyCam(p,avoid,dt){let pitch=p.pitch,dist=p.dist;
-  if(avoid&&anim.walls&&anim.walls.length){let addP=0,addD=0;
-    if(camBlocked(p,pitch,dist)){addP=PITCH_MAX-pitch;for(let a=.06;a<=1.2;a+=.06)if(!camBlocked(p,Math.min(PITCH_MAX,pitch+a),dist)){addP=a;break;}
-      const h=camBlocked(p,Math.min(PITCH_MAX,pitch+addP),dist);if(h)addD=Math.max(2,h.distance-.25)-dist;}
-    const k=Math.min(1,(dt||.016)*(addP>camAvoid.pitch?8:2.5));camAvoid.pitch+=(addP-camAvoid.pitch)*k;camAvoid.dist+=(addD-camAvoid.dist)*k;
-    pitch=Math.min(PITCH_MAX,pitch+camAvoid.pitch);dist=dist+camAvoid.dist;}
+  // un mur entre la balle et la caméra : la caméra avance devant le mur (l'angle choisi par le joueur est gardé, on peut viser bas)
+  if(avoid&&anim.walls&&anim.walls.length){let addD=0;const h=camBlocked(p,pitch,dist);
+    if(h)addD=Math.max(.7,h.distance-.3)-dist;
+    const k=Math.min(1,(dt||.016)*(addD<camAvoid.dist?14:3));camAvoid.pitch=0;camAvoid.dist+=(addD-camAvoid.dist)*k;
+    if(h)camAvoid.dist=Math.min(camAvoid.dist,Math.max(.7,h.distance-.3)-dist+.6);
+    dist=Math.max(.7,dist+camAvoid.dist);}
   const cp=Math.cos(pitch);
   let x=p.tx+Math.sin(p.yaw)*cp*dist,y=p.ty+Math.sin(pitch)*dist,z=p.tz+Math.cos(p.yaw)*cp*dist;
   if(shake>0){const s=shake*shake*.12;x+=(Math.random()-.5)*s;y+=(Math.random()-.5)*s;z+=(Math.random()-.5)*s;}
@@ -2481,7 +2482,7 @@ function loadHole(i){
   for(let k=0;k<i;k++)if(S.sc[k]==null)S.sc[k]=HOLES[S.L[k]].par+PEN;
   S.strokes=0;S.shotN=0;S.done=false;S.pen=false;S.firstDoneAt=0;S.advanceAt=0;S.lastTick=-1;simT=0;swing.on=false;aim.on=false;
   if(PH){PH.free();PH=null;}if(PV){PV.free();PV=null;pvHd=null;}clearGhosts();
-  placeBall(H.tee.x,H.tee.z);ball.lastX=H.tee.x;ball.lastZ=H.tee.z;ball.lastY=ball.y;resetCamYaw();cam.pitch=.3;cam.dist=4.6;cam.overview=false;
+  placeBall(H.tee.x,H.tee.z);ball.lastX=H.tee.x;ball.lastZ=H.tee.z;ball.lastY=ball.y;resetCamYaw();cam.pitch=.3;cam.dist=5.4;cam.overview=false;
   ensurePhysics(H);
   cur.tx=ball.x;cur.ty=ball.y;cur.tz=ball.z;cam.from=camOverPose();cam.from.yaw=cam.yaw+.6;cam.intro=0;cam.flyYaw=null;
   showOnly(null);$('hud').hidden=false;$('mBetween').hidden=true;$('mFinal').hidden=true;$('timer').hidden=true;
@@ -2787,7 +2788,7 @@ async function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non cha
   finally{ph.free();}}
 
 // accès de débogage depuis la console (le script est un module)
-Object.assign(window,{renderPreview,holed,showFinal,podium,stepFrame:dt=>{if(!H)return;updateObstacles(sharedTime(),dt);if(S.mode==='play')updateBall(dt);updateVisuals(dt,performance.now()/1000);},shoot,sharedTime,clockS,gaugeDist,flatDistRaw,distToV,previewPath,aimMove,ballScreen,floatText,camAvoid,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
+Object.assign(window,{renderPreview,holed,showFinal,podium,stepFrame:dt=>{if(!H)return;updateObstacles(sharedTime(),dt);if(S.mode==='play')updateBall(dt);updateVisuals(dt,performance.now()/1000);},shoot,sharedTime,clockS,gaugeDist,flatDistRaw,distToV,previewPath,aimMove,ballScreen,floatText,camAvoid,camBlocked,applyCam,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
 for(const [k,g] of Object.entries({anim:()=>anim,H:()=>H,PH:()=>PH,RAPIER:()=>RAPIER,simT:()=>simT}))Object.defineProperty(window,k,{get:g,configurable:true});
 
 // ===================== Démarrage =====================
