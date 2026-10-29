@@ -297,6 +297,32 @@ select option,select optgroup{background:#fff;color:var(--ink2)}
 .wood .podium .note{color:#fff1d6;text-align:center;text-shadow:0 2px 0 #2a2118}
 .wood .optgrid .lbl{color:#fff1d6;font:400 17px 'Lilita One',var(--display);text-transform:uppercase;-webkit-text-stroke:1px #2a2118;paint-order:stroke fill}
 .wood select{background:#fff6e2;border:3px solid #2a2118}
+/* carte de score finale : centrée en bas (le podium 3D reste visible au-dessus), largeur ajustée au contenu */
+#mFinal.bottom{align-items:flex-end;justify-content:center;padding-bottom:max(16px,4vh);background:linear-gradient(180deg,transparent 35%,rgba(10,20,30,.45))!important}
+#mFinal .wood.wide{width:auto;min-width:min(460px,100%);max-width:min(860px,100%);align-items:stretch;padding:22px 28px 24px}
+#mFinal .carved{text-align:center}
+#mFinal .podium{gap:2px}
+#mFinal .podium .p1{font-size:30px;line-height:1.1}
+#mFinal .podium .note{font:700 15px var(--body)}
+.wood .scard-wrap{overflow:hidden;align-self:center;max-width:100%;overflow-x:auto}
+.wood table.scard{min-width:0;width:auto;font-size:15px}
+.wood .scard th,.wood .scard td{padding:8px 14px;border-right:2px solid #eadcc2;border-bottom:2px solid #eadcc2}
+.wood .scard tr:last-child td{border-bottom:0}.wood .scard th:last-child,.wood .scard td:last-child{border-right:0}
+.wood .scard thead th{background:#2a2118;color:#fff6e2;font:400 14px 'Lilita One',var(--display);letter-spacing:1px}
+.wood .scard thead th:first-child{background:#2a2118}
+.wood .scard td:first-child{min-width:150px;padding-right:22px;background:#fff6e2}
+.wood .scard tr.par td{background:#f4e6c8;color:#7a6146;font-weight:800}
+.wood .scard tr.me td{background:#fffbea}
+.wood .scard td.total{font:400 20px 'Lilita One',var(--display);background:#ffe9a8!important}
+.wood .scard td.total small{font:800 13px var(--body);color:#7a6146}
+.wood .scard .sc{display:inline-grid;place-items:center;min-width:28px;height:28px;font:400 17px 'Lilita One',var(--display);color:#2a2118}
+.wood .scard .sc.u,.wood .scard .sc.u2{border:2.5px solid #1f8a3a;border-radius:50%;color:#1f8a3a}
+.wood .scard .sc.u2{box-shadow:0 0 0 2.5px #fff6e2,0 0 0 5px #1f8a3a}
+.wood .scard .sc.o,.wood .scard .sc.o2{border:2.5px solid #c43a2a;border-radius:4px;color:#c43a2a}
+.wood .scard .sc.o2{box-shadow:0 0 0 2.5px #fff6e2,0 0 0 5px #c43a2a}
+.wood .scard .sc.ace{background:#ffcf2e;border:2.5px solid #2a2118;border-radius:50%}
+.wood-btns{align-items:center}
+.wood-btns .b3{margin:0}
 /* HUD compact : petit bandeau du trou, mini-carte, bouton pause rond, jauge fine en bas */
 .hud-hole{top:14px;left:14px;padding:6px 14px 6px 6px;gap:10px;display:flex;align-items:center;background:#fff6e2;border:3px solid #2a2118;border-radius:40px;box-shadow:0 4px 0 #2a2118;max-width:calc(100vw - 220px)}
 .hud-hole .hole-no{width:46px;height:46px;border-radius:50%;background:#ff7a2e;border:3px solid #2a2118;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;-webkit-text-stroke:1.5px #2a2118;flex:0 0 auto}
@@ -2550,12 +2576,12 @@ function showFinal(){
   const L=S.L;
   let h='<thead><tr><th>Trou</th>'+L.map((_,k)=>`<th>${k+1}</th>`).join('')+'<th>Total</th></tr></thead><tbody>';
   h+='<tr class="par"><td>Par</td>'+L.map(n=>`<td>${HOLES[n].par}</td>`).join('')+`<td>${L.reduce((a,n)=>a+HOLES[n].par,0)}</td></tr>`;
-  for(const p of list){const t=totals(p.sc,L);h+=`<tr><td><span class="dot" style="display:inline-block;vertical-align:-2px;margin-right:6px;background:${COLORS[p.c|0]||'#fff'}"></span>${esc(p.n)}${p.isMe?' (toi)':''}</td>`+
-    L.map((n,k)=>{const v=p.sc&&p.sc[k];if(typeof v!=='number')return'<td>–</td>';const d=v-HOLES[n].par;return`<td class="${v===1?'ace':d<0?'u':d>0?'o':''}">${v}</td>`;}).join('')+`<td class="total">${t.s} <small>(${fmtDiff(t.d)})</small></td></tr>`;}
+  for(const p of list){const t=totals(p.sc,L);h+=`<tr class="${p.isMe?'me':''}"><td><span class="dot" style="display:inline-block;vertical-align:-2px;margin-right:6px;background:${COLORS[p.c|0]||'#fff'}"></span>${esc(p.n)}${p.isMe?' (toi)':''}</td>`+
+    L.map((n,k)=>{const v=p.sc&&p.sc[k];if(typeof v!=='number')return'<td>–</td>';const d=v-HOLES[n].par;return`<td><span class="sc ${v===1?'ace':d<=-2?'u2':d<0?'u':d>=2?'o2':d>0?'o':'e'}">${v}</span></td>`;}).join('')+`<td class="total">${t.s} <small>(${fmtDiff(t.d)})</small></td></tr>`;}
   $('scard').innerHTML=h+'</tbody>';
-  const w=list[0];$('podium').innerHTML=w?`<div class="p1">${esc(w.n)} gagne avec ${totals(w.sc,L).s} coups</div>`+list.slice(1).map((p,k)=>`<div class="note">${k+2}. ${esc(p.n)} — ${totals(p.sc,L).s} coups</div>`).join(''):'';
+  const w=list[0];$('podium').innerHTML=w&&list.length===1?`<div class="p1">Parcours terminé</div><div class="note">${totals(w.sc,L).s} coups · ${fmtDiff(totals(w.sc,L).d)} par rapport au par</div>`:w?`<div class="p1">${esc(w.n)} gagne avec ${totals(w.sc,L).s} coups</div>`+list.slice(1).map((p,k)=>`<div class="note">${k+2}. ${esc(p.n)} — ${totals(p.sc,L).s} coups</div>`).join(''):'';
   btnLabel('btnAgain',S.net&&S.net.kind==='local'?'Rejouer':'Revenir au groupe','play');
-  $('mFinal').classList.add('side');$('mFinal').hidden=false;SFX.win();buildPodium(list);
+  $('mFinal').classList.remove('side');$('mFinal').classList.add('bottom');$('mFinal').hidden=false;SFX.win();buildPodium(list);
 }
 
 // ===================== Écrans =====================
