@@ -123,7 +123,7 @@ input[type=text]:focus,select:focus{border-color:var(--sun)}
 .pw-l small{display:block;margin-top:2px;font-size:10px;letter-spacing:.4px;text-transform:none;font-weight:700;color:var(--muted);white-space:nowrap}
 #hint{bottom:16px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:700;color:var(--muted);padding:8px 14px;white-space:nowrap;max-width:calc(100vw - 32px);overflow:hidden;text-overflow:ellipsis}
 #hint kbd{font:800 11px var(--body);background:rgba(255,255,255,.12);border-radius:5px;padding:2px 6px;color:var(--paper)}
-#btnPause{bottom:16px;left:16px;pointer-events:auto;padding:10px 14px;font:700 16px var(--display);letter-spacing:.5px}
+#btnPause{pointer-events:auto}
 #toast{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(.9);font:700 clamp(30px,5vw,56px) var(--display);color:#fff;text-shadow:0 4px 0 rgba(0,0,0,.45),0 0 30px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;text-align:center;white-space:pre-line;max-width:90vw}
 #toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
 #toast small{display:block;font:800 16px var(--body);text-shadow:0 2px 6px rgba(0,0,0,.6)}
@@ -241,6 +241,95 @@ select option,select optgroup{background:#fff;color:var(--ink2)}
 #ldTip{-webkit-text-stroke:0;color:#eaf6ff}
 #fps{color:var(--ink2)}
 .optgrid .lbl{color:var(--ink2)}
+/* ===== Interface de jeu (menus sur la scène 3D, gros boutons en relief, panneaux en bois) ===== */
+.ic{width:1.15em;height:1.15em;flex:0 0 auto;color:#fff}
+.b3{--c:#4fbf3a;--d:#2e7f22;display:inline-flex;align-items:center;justify-content:center;gap:.45em;border:3.5px solid #2a2118;border-radius:18px;background:var(--c);color:#fff;
+  font:400 22px 'Lilita One',var(--display);letter-spacing:.8px;text-transform:uppercase;-webkit-text-stroke:1.6px #2a2118;paint-order:stroke fill;text-shadow:0 3px 0 #2a2118;
+  box-shadow:inset 0 -6px 0 var(--d),inset 0 4px 0 rgba(255,255,255,.35),0 6px 0 #2a2118;padding:12px 22px 15px;cursor:pointer;transition:transform .12s cubic-bezier(.3,1.8,.5,1),box-shadow .1s;
+  animation:popBtn .55s cubic-bezier(.3,1.7,.5,1) both}
+.b3:hover:not(:disabled){transform:translateY(-3px) scale(1.06)}
+.b3:active:not(:disabled){transform:translateY(5px) scale(.98);box-shadow:inset 0 -2px 0 var(--d),inset 0 3px 0 rgba(255,255,255,.3),0 1px 0 #2a2118}
+.b3:disabled{filter:grayscale(.6) brightness(.9);cursor:not-allowed}
+.b3.green{--c:#56c63a;--d:#2f8a24}.b3.yellow{--c:#ffcf2e;--d:#c99a0e}.b3.orange{--c:#ff7a2e;--d:#c4501a}.b3.blue{--c:#3aa6ff;--d:#1f6fc4}.b3.white{--c:#fff6e2;--d:#d9c7a3;color:#2a2118;-webkit-text-stroke:0;text-shadow:none}
+.b3.white .ic{color:#fff}
+.b3.huge{font-size:clamp(34px,4.6vw,50px);padding:16px 44px 22px;border-radius:26px;border-width:4.5px}
+.b3.big{font-size:28px;padding:14px 30px 18px}
+.b3.mid{font-size:22px}.b3.small{font-size:17px;padding:9px 16px 12px;border-radius:14px}
+@keyframes popBtn{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+/* écran titre : rien dans une boîte, tout posé sur la scène */
+.screen.menu3d,.screen.lobby3d{background:linear-gradient(180deg,rgba(10,30,60,.35),rgba(10,30,60,0) 30%,rgba(10,30,60,0) 60%,rgba(10,30,60,.45))!important;display:block;padding:0;overflow:hidden}
+.logo3d{position:absolute;left:50%;top:5vh;transform:translateX(-50%);margin:0;text-align:center;line-height:.82;font:400 clamp(70px,11vw,150px) 'Lilita One',var(--display);letter-spacing:2px;animation:logoBob 3.2s ease-in-out infinite;pointer-events:none;white-space:nowrap}
+.logo3d span{display:block;-webkit-text-stroke:8px #2a2118;paint-order:stroke fill;text-shadow:0 10px 0 #2a2118,0 18px 24px rgba(0,0,0,.35)}
+.logo3d .l1{color:#ffcf2e;transform:rotate(-4deg)}.logo3d .l2{color:#ff7a2e;font-size:.72em;transform:rotate(-2deg) translateX(.2em)}
+@keyframes logoBob{0%,100%{transform:translateX(-50%) translateY(0) rotate(0)}50%{transform:translateX(-50%) translateY(-10px) rotate(1deg)}}
+.menu-dock{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:16px;width:min(980px,96vw)}
+.menu-main{display:flex;align-items:flex-end;justify-content:center;gap:18px;flex-wrap:wrap}
+.namebox,.joinbox{display:flex;align-items:center;gap:10px}
+.namebox span{font:400 20px 'Lilita One',var(--display);color:#fff;-webkit-text-stroke:1.6px #2a2118;paint-order:stroke fill;text-shadow:0 3px 0 #2a2118;text-transform:uppercase}
+.namebox input,.joinbox input,.linkrow input{width:230px;background:#fff6e2;border:3.5px solid #2a2118;border-radius:14px;padding:10px 14px;font:400 22px 'Lilita One',var(--display);color:#2a2118;box-shadow:0 5px 0 #2a2118;text-align:center}
+.joinbox input{width:200px;text-transform:uppercase;letter-spacing:3px;font-size:20px}
+.menu-note{margin:0;font:700 14px var(--body);color:#fff;text-shadow:0 2px 0 #2a2118,0 0 8px rgba(0,0,0,.6);text-align:center;max-width:600px}
+/* salle d'attente : panneau du code + balles sur le podium 3D au centre */
+.sign{position:absolute;left:24px;top:24px;padding:16px 20px 18px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;transform:rotate(-1.5deg)}
+.sign,.wood{background:repeating-linear-gradient(180deg,#b9733a 0 34px,#a8642f 34px 36px,#c27c41 36px 70px,#9c5a2a 70px 72px);border:4px solid #2a2118;border-radius:12px;box-shadow:inset 0 0 0 3px rgba(255,220,170,.25),0 7px 0 #2a2118;color:#fff6e2;position:relative}
+.sign::before,.sign::after,.wood::before,.wood::after{content:"";position:absolute;top:10px;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e8e2d6,#6b6458);box-shadow:0 1px 0 #2a2118}
+.sign::before,.wood::before{left:10px}.sign::after,.wood::after{right:10px}
+.sign-k{font:400 16px 'Lilita One',var(--display);text-transform:uppercase;letter-spacing:1px;-webkit-text-stroke:1.2px #2a2118;paint-order:stroke fill}
+.sign .codebox{font:400 54px 'Lilita One',var(--display);letter-spacing:8px;color:#ffcf2e;-webkit-text-stroke:3px #2a2118;paint-order:stroke fill;text-shadow:0 5px 0 #2a2118;line-height:1}
+.linkrow{display:flex;gap:8px;align-items:center}.linkrow input{width:250px;font:700 13px var(--body);text-align:left}
+.lobby-dock{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;width:min(980px,96vw)}
+.pickrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.pick{display:flex;align-items:center;gap:8px;background:#fff6e2;border:3.5px solid #2a2118;border-radius:14px;box-shadow:0 5px 0 #2a2118;padding:6px 10px}
+.pick span{font:400 16px 'Lilita One',var(--display);text-transform:uppercase;color:#2a2118}
+.pick select{border:0;box-shadow:none;background:transparent;padding:4px 6px;font:400 18px 'Lilita One',var(--display);width:auto}
+.lobby-btns{display:flex;gap:16px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+/* panneaux en bois : score entre les trous, carte finale, pause */
+.modal{background:rgba(10,20,30,.35)!important}
+.wood{width:min(560px,100%);padding:26px 26px 22px;display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow:auto;box-sizing:border-box;animation:popIn .45s cubic-bezier(.3,1.5,.5,1) both}
+.wood.wide{width:min(860px,100%)}
+.carved{margin:0;text-align:center;font:400 40px 'Lilita One',var(--display);color:#ffcf2e;-webkit-text-stroke:3px #2a2118;paint-order:stroke fill;text-shadow:0 5px 0 #2a2118;text-transform:uppercase}
+.wood-note{margin:0;text-align:center;font:700 14px var(--body);color:#fff1d6;text-shadow:0 2px 0 #2a2118}
+.wood-btns{display:flex;justify-content:center;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.wood .res .r{background:#fff6e2;border:3px solid #2a2118;border-radius:12px;color:#2a2118;box-shadow:0 4px 0 #2a2118}
+.wood .res .r b{font-family:'Lilita One',var(--display);font-weight:400}
+.wood .scard-wrap{background:#fff6e2;border:3px solid #2a2118;border-radius:12px;box-shadow:0 4px 0 #2a2118;color:#2a2118}
+.wood .podium .p1{color:#ffcf2e;-webkit-text-stroke:2px #2a2118;paint-order:stroke fill;text-align:center;font-size:30px}
+.wood .podium .note{color:#fff1d6;text-align:center;text-shadow:0 2px 0 #2a2118}
+.wood .optgrid .lbl{color:#fff1d6;font:400 17px 'Lilita One',var(--display);text-transform:uppercase;-webkit-text-stroke:1px #2a2118;paint-order:stroke fill}
+.wood select{background:#fff6e2;border:3px solid #2a2118}
+/* HUD compact : petit bandeau du trou, mini-carte, bouton pause rond, jauge fine en bas */
+.hud-hole{top:14px;left:14px;padding:6px 14px 6px 6px;gap:10px;display:flex;align-items:center;background:#fff6e2;border:3px solid #2a2118;border-radius:40px;box-shadow:0 4px 0 #2a2118;max-width:calc(100vw - 220px)}
+.hud-hole .hole-no{width:46px;height:46px;border-radius:50%;background:#ff7a2e;border:3px solid #2a2118;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;-webkit-text-stroke:1.5px #2a2118;flex:0 0 auto}
+.hud-hole .hole-no small{display:none}
+.hud-hole .hole-name{font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hud-hole .hole-meta{font-size:12px;color:#7b6a55;font-weight:800;white-space:nowrap}
+.hud-hole .strokes{border-left:3px solid rgba(42,33,24,.2);padding-left:10px;text-align:center}
+.hud-hole .strokes b{font:400 26px 'Lilita One',var(--display)}.hud-hole .strokes span{font-size:10px}
+.hole-txt{min-width:0}
+.roundbtn{position:absolute;top:14px;right:14px;width:48px;height:48px;border-radius:50%;background:#fff6e2;border:3px solid #2a2118;box-shadow:0 4px 0 #2a2118;display:flex;align-items:center;justify-content:center;pointer-events:auto;cursor:pointer;padding:0;transition:transform .12s}
+.roundbtn .ic{color:#ffcf2e;width:24px;height:24px}.roundbtn:hover{transform:scale(1.08)}.roundbtn:active{transform:translateY(3px)}
+#mini{top:72px;right:14px;bottom:auto;width:140px;height:140px;background:#fff6e2;border:3px solid #2a2118;border-radius:16px;box-shadow:0 4px 0 #2a2118;padding:0}
+#board{top:224px;right:14px;width:190px;padding:0;background:none;border:0;box-shadow:none;gap:6px}
+#board .pl{background:#fff6e2;border:3px solid #2a2118;border-radius:12px;box-shadow:0 3px 0 #2a2118;padding:5px 8px}
+#board .pl .st{font-size:11px}
+#power{left:50%;bottom:14px;transform:translateX(-50%);width:min(380px,70vw);padding:6px 12px;gap:10px;background:#fff6e2;border:3px solid #2a2118;border-radius:30px;box-shadow:0 4px 0 #2a2118;display:flex;align-items:center}
+#power .pw-bar{height:16px}#power .pw-r{flex-direction:row;align-items:baseline;gap:8px}#powerPct{font-size:20px;min-width:0}#pwM{margin:0}
+#timer{top:14px;left:50%;transform:translateX(-50%);padding:6px 18px;background:#fff6e2;border:3px solid #2a2118;border-radius:30px;box-shadow:0 4px 0 #2a2118;text-align:center}
+#timer b{font:400 28px 'Lilita One',var(--display);color:#e8342a;display:block;line-height:1}#timer span{font-size:11px;font-weight:800}
+#emotes{right:14px;bottom:14px;left:auto;transform:none;flex-direction:column;background:none;border:0;box-shadow:none;padding:0;gap:6px;display:flex}
+#emotes button{width:44px;height:44px;border-radius:50%;background:#fff6e2;border:3px solid #2a2118;box-shadow:0 3px 0 #2a2118;font:400 16px 'Lilita One',var(--display);color:#2a2118;padding:0;display:flex;align-items:center;justify-content:center}
+#emotes .ic{color:#ffcf2e;width:26px;height:26px}
+#emotes[hidden]{display:none!important}
+#msg{background:#fff6e2;border:3px solid #2a2118;border-radius:14px;box-shadow:0 4px 0 #2a2118;bottom:70px}
+#fps{background:#fff6e2;border:3px solid #2a2118;border-radius:10px}
+.title3d{font:400 46px 'Lilita One',var(--display);color:#ffcf2e;-webkit-text-stroke:3px #2a2118;paint-order:stroke fill;text-shadow:0 5px 0 #2a2118;text-transform:uppercase;margin:0}
+.pv-btns{display:flex;gap:12px;justify-content:center;align-items:flex-end}
+#scrCustom{background:rgba(10,30,60,.55)!important}
+#scrCustom .lbl{color:#fff;font:400 17px 'Lilita One',var(--display);-webkit-text-stroke:1.2px #2a2118;paint-order:stroke fill;text-shadow:0 2px 0 #2a2118;letter-spacing:1px}
+#scrCustom .opt{font:400 16px 'Lilita One',var(--display);border:3px solid #2a2118;border-radius:14px;box-shadow:0 4px 0 #2a2118;background:#fff6e2;padding:8px 14px}
+#scrCustom .opt[aria-pressed=true]{background:#ffcf2e;transform:translateY(2px);box-shadow:0 2px 0 #2a2118}
+#scrCustom .picker span{color:#fff;font:400 16px 'Lilita One',var(--display);-webkit-text-stroke:1px #2a2118;paint-order:stroke fill}
+@media (max-width:760px){.menu-main .b3.mid{font-size:17px}.logo3d{top:3vh}.sign{transform:none;left:12px;top:12px}.sign .codebox{font-size:38px}}
 /* animations d'entrée des menus (glissement + rebond), des fenêtres et du HUD */
 .screen:not([hidden]) .card>*,.screen:not([hidden]) .opts>*,.screen:not([hidden]) .pv-col{animation:slideIn .55s cubic-bezier(.3,1.45,.5,1) both}
 .card>*:nth-child(2),.opts>*:nth-child(2){animation-delay:.04s}.card>*:nth-child(3),.opts>*:nth-child(3){animation-delay:.08s}.card>*:nth-child(4),.opts>*:nth-child(4){animation-delay:.12s}
@@ -256,25 +345,45 @@ select option,select optgroup{background:#fff;color:var(--ink2)}
 
 <canvas id="cv" tabindex="0" aria-label="Parcours de minigolf en 3D"></canvas>
 
-<section id="scrMenu" class="screen">
-  <div class="card">
-    <h1 class="logo">Putt<span>Odyssée</span></h1>
-    <p class="tag"><b>50 trous</b> · 5 mondes · ponts-levis, pads, pièges · jusqu'à <b>5 joueurs</b></p>
-    <div class="worlds"><span class="chip">Forêt</span><span class="chip">Désert</span><span class="chip">Neige</span><span class="chip">Ville</span><span class="chip">Espace</span></div>
-    <div class="field"><label class="lbl" for="inName">Ton pseudo</label><input id="inName" type="text" maxlength="14" autocomplete="off" placeholder="Pseudo"></div>
-    <div class="me-card"><span class="dot" id="meDot"></span><div><b>Ma balle</b><small id="meSum">Rouge · Uni · Casquette</small></div><button class="btn ghost" id="btnCustom"><span class="ico">🎨</span>Personnaliser</button></div>
-    <div class="row"><button class="btn" id="btnCreate"><span class="ico">👥</span>Créer un groupe</button><button class="btn alt" id="btnSolo"><span class="ico">⛳</span>Jouer seul</button></div>
-    <div class="field"><label class="lbl" for="inCode">Rejoindre avec un code</label>
-      <div class="split"><input id="inCode" type="text" maxlength="8" autocomplete="off" placeholder="ex. k7m2p"><button class="btn ghost" id="btnJoin"><span class="ico">🚪</span>Rejoindre</button></div></div>
-    <p class="note" id="netNote"></p>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 3.5l13 8.5-13 8.5z" fill="currentColor" stroke="#2a2118" stroke-width="2.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><g fill="currentColor" stroke="#2a2118" stroke-width="2.2" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.6"/><circle cx="16.5" cy="9" r="3"/><path d="M2.5 20c0-4 2.7-6.5 6-6.5s6 2.5 6 6.5z"/><path d="M14.6 20c0-2.6-.6-4.3-1.8-5.6 1-.7 2.3-1 3.7-1 3 0 5 2.3 5 6.6z"/></g></symbol>
+    <symbol id="i-enter" viewBox="0 0 24 24"><g fill="none" stroke="#2a2118" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h6v16h-6"/><path d="M3 12h11M10 8l4 4-4 4"/></g></symbol>
+    <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="currentColor" stroke="#2a2118" stroke-width="2.4"/><g fill="#2a2118" opacity=".35"><circle cx="9" cy="9" r="1.1"/><circle cx="13" cy="8" r="1.1"/><circle cx="15.5" cy="11.5" r="1.1"/><circle cx="11" cy="12.5" r="1.1"/><circle cx="14" cy="15.5" r="1.1"/><circle cx="9.5" cy="16" r="1.1"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g fill="#fff" stroke="#2a2118" stroke-width="2.4" stroke-linejoin="round"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M5 16V5a2 2 0 0 1 2-2h9"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#2a2118" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><g stroke="#2a2118" stroke-width="2.4" stroke-linejoin="round"><path d="M6 21V3" fill="none" stroke-linecap="round"/><path d="M6 4h12l-3 4 3 4H6z" fill="currentColor"/></g></symbol>
+    <symbol id="i-exit" viewBox="0 0 24 24"><g fill="none" stroke="#2a2118" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H4v16h6"/><path d="M21 12H10M17 8l4 4-4 4"/></g></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><g fill="currentColor" stroke="#2a2118" stroke-width="2.2" stroke-linejoin="round"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></g></symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="#fff" stroke="#2a2118" stroke-width="2.4"/><g fill="#2a2118"><circle cx="8.5" cy="8.5" r="1.6"/><circle cx="15.5" cy="15.5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="15.5" cy="8.5" r="1.6"/><circle cx="8.5" cy="15.5" r="1.6"/></g></symbol>
+    <symbol id="i-clap" viewBox="0 0 24 24"><g fill="currentColor" stroke="#2a2118" stroke-width="2" stroke-linejoin="round"><path d="M8 21c-3-2-4.5-5-3.5-8l2-6c.4-1.2 2-1 2 .3V12l3.5-7c.6-1.2 2.3-.7 2 .7L12.5 11l3-5c.7-1.1 2.2-.5 1.9.8L15 13l2-3c.8-1 2.2-.3 1.8.9C17.5 15 16 19 13 21z"/></g><g stroke="#2a2118" stroke-width="2" stroke-linecap="round"><path d="M19 3l1-1.5M21.5 6H23M17 2l-.2-1.5"/></g></symbol>
+    <symbol id="i-laugh" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="currentColor" stroke="#2a2118" stroke-width="2.2"/><g fill="none" stroke="#2a2118" stroke-width="2.2" stroke-linecap="round"><path d="M7 9.5l2 1-2 1M17 9.5l-2 1 2 1"/></g><path d="M6.5 13.5h11c-.5 3.5-3 5.5-5.5 5.5s-5-2-5.5-5.5z" fill="#2a2118"/></symbol>
+    <symbol id="i-angry" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="currentColor" stroke="#2a2118" stroke-width="2.2"/><g fill="none" stroke="#2a2118" stroke-width="2.2" stroke-linecap="round"><path d="M6.5 8l4 2M17.5 8l-4 2M8 17c2.5-2 5.5-2 8 0"/></g><g fill="#2a2118"><circle cx="9" cy="11.5" r="1.3"/><circle cx="15" cy="11.5" r="1.3"/></g></symbol>
+  </defs>
+</svg>
+
+<section id="scrMenu" class="screen menu3d">
+  <h1 class="logo3d" aria-label="Putt Odyssée"><span class="l1">PUTT</span><span class="l2">ODYSSÉE</span></h1>
+  <div class="menu-dock">
+    <label class="namebox"><span>Pseudo</span><input id="inName" type="text" maxlength="14" autocomplete="off" placeholder="Ton pseudo"></label>
+    <div class="menu-main">
+      <button class="b3 orange mid" id="btnCustom"><svg class="ic"><use href="#i-ball"/></svg>Ma balle</button>
+      <button class="b3 green huge" id="btnSolo"><svg class="ic"><use href="#i-play"/></svg>Jouer</button>
+      <button class="b3 yellow mid" id="btnCreate"><svg class="ic"><use href="#i-users"/></svg>Créer un groupe</button>
+    </div>
+    <div class="joinbox"><input id="inCode" type="text" maxlength="8" autocomplete="off" placeholder="Code d'un ami"><button class="b3 blue small" id="btnJoin"><svg class="ic"><use href="#i-enter"/></svg>Rejoindre</button></div>
+    <p class="menu-note" id="netNote"></p>
+    <span id="meDot" hidden></span><span id="meSum" hidden></span>
   </div>
 </section>
 
 <section id="scrCustom" class="screen" hidden>
   <div class="custom">
-    <div class="pv-col"><canvas id="pv" width="640" height="640" aria-label="Aperçu de la balle"></canvas><button class="btn" id="btnCustomDone">Valider</button></div>
+    <div class="pv-col"><canvas id="pv" width="640" height="640" aria-label="Aperçu de la balle"></canvas>
+      <div class="pv-btns"><button class="b3 white small" id="btnRandom"><svg class="ic"><use href="#i-dice"/></svg>Au hasard</button><button class="b3 green mid" id="btnCustomDone"><svg class="ic"><use href="#i-check"/></svg>Valider</button></div></div>
     <div class="opts">
-      <h2>Ma balle</h2>
+      <h2 class="title3d">Ma balle</h2>
       <div class="field"><span class="lbl">Couleur</span><div class="swatches" id="cuColor"></div>
         <label class="picker"><input type="color" id="cuPick" value="#ff5b47"><span>Couleur libre</span></label></div>
       <div class="field"><span class="lbl">Motif</span><div class="choices" id="cuPattern"></div></div>
@@ -283,69 +392,72 @@ select option,select optgroup{background:#fff;color:var(--ink2)}
       <div class="field"><span class="lbl">Lunettes</span><div class="choices" id="cuGlass"></div></div>
       <div class="field"><span class="lbl">Traînée</span><div class="choices" id="cuTrail"></div></div>
       <div class="field"><span class="lbl">Effet dans le trou</span><div class="choices" id="cuFx"></div></div>
-      <div class="row"><button class="btn ghost" id="btnRandom">🎲 Aléatoire</button></div>
-      <p class="note">Tout est sauvegardé sur ce PC, et tes amis voient ta balle (couleur, motif, chapeau, visage, lunettes, traînée et effet) pendant la partie.</p>
     </div>
   </div>
 </section>
 
-<section id="scrLobby" class="screen" hidden>
-  <div class="card">
-    <div class="field" id="codeField"><span class="lbl" id="lobbyTitle">Code du groupe</span><div class="codebox" id="codeBox">-----</div></div>
-    <div class="field" id="linkField"><label class="lbl" for="inLink">Lien d'invitation</label>
-      <div class="split"><input id="inLink" type="text" readonly><button class="btn ghost" id="btnCopy">Copier</button></div></div>
-    <div class="field" id="playersField"><span class="lbl" id="playersLbl">Joueurs</span><ul class="players" id="players"></ul></div>
-    <div class="row" id="courseRow">
-      <div class="field"><label class="lbl" for="selCount">Nombre de trous</label><select id="selCount"><option value="9">9 trous</option><option value="18">18 trous</option><option value="50">Tous les trous</option><option value="1">Un seul trou</option></select></div>
-      <div class="field"><label class="lbl" for="selTheme">Thème</label><select id="selTheme"><option value="a">Tous les thèmes</option></select></div>
+<section id="scrLobby" class="screen lobby3d" hidden>
+  <div class="sign" id="codeField">
+    <span class="sign-k" id="lobbyTitle">Code du groupe</span>
+    <div class="codebox" id="codeBox">-----</div>
+    <div class="linkrow" id="linkField"><input id="inLink" type="text" readonly aria-label="Lien d'invitation"><button class="b3 white small" id="btnCopy"><svg class="ic"><use href="#i-copy"/></svg>Copier</button></div>
+    <span class="sign-k" id="playersLbl">Joueurs</span>
+  </div>
+  <div id="playersField" hidden><ul id="players"></ul></div>
+  <div class="lobby-dock">
+    <div class="pickrow" id="courseRow">
+      <label class="pick"><span>Trous</span><select id="selCount"><option value="9">9 trous</option><option value="18">18 trous</option><option value="50">Tous</option><option value="1">Un seul</option></select></label>
+      <label class="pick"><span>Thème</span><select id="selTheme"><option value="a">Tous</option></select></label>
+      <label class="pick" id="holeField" hidden><span>Trou</span><select id="selHole"></select></label>
     </div>
-    <div class="field" id="holeField" hidden><label class="lbl" for="selHole">Trou</label><select id="selHole"></select></div>
     <select id="selCourse" hidden></select>
-    <p class="note" id="lobbyNote"></p>
-    <div class="row"><button class="btn alt" id="btnReady" hidden>Je suis prêt</button><button class="btn" id="btnStart">Lancer la partie</button><button class="btn ghost" id="btnLeave">Quitter</button></div>
+    <p class="menu-note" id="lobbyNote"></p>
+    <div class="lobby-btns">
+      <button class="b3 white small" id="btnLeave"><svg class="ic"><use href="#i-exit"/></svg>Quitter</button>
+      <button class="b3 yellow big" id="btnReady" hidden><svg class="ic"><use href="#i-check"/></svg>Je suis prêt</button>
+      <button class="b3 green huge" id="btnStart"><svg class="ic"><use href="#i-flag"/></svg>Lancer</button>
+    </div>
   </div>
 </section>
 
 <div id="hud" hidden>
-  <div class="glass hud-hole">
+  <div class="hud-hole">
     <div class="hole-no" id="hNo">1<small>/10</small></div>
-    <div><div class="hole-name" id="hName">Premier pas</div><div class="hole-meta" id="hMeta">Par 2 · Prairie</div></div>
+    <div class="hole-txt"><div class="hole-name" id="hName">Premier pas</div><div class="hole-meta" id="hMeta">Par 2</div></div>
     <div class="strokes"><b id="hStrokes">0</b><span>coups</span></div>
   </div>
   <div class="glass hud-wind" hidden><div class="compass"><i id="windArrow"></i></div><div class="wind-v"><b id="windKmh">0 km/h</b><span id="windLbl">Vent</span></div></div>
-  <div class="glass" id="board"></div>
-  <div class="glass" id="timer" hidden><b id="timerS">25</b><span id="timerTxt">secondes avant +5 coups</span></div>
-  <div class="glass idle" id="power"><span class="pw-l">Puissance<small id="pwLastTxt">Dernier coup : —</small></span><div class="pw-bar" id="pwBar"><div id="powerFill"></div><i id="pwLast" hidden></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><div class="pw-r"><b id="powerPct">0%</b><span id="pwM">≈ 0 m</span></div></div>
-  <div class="glass" id="hint"><kbd>Clic sur la balle</kbd> tirer en arrière puis lâcher · <kbd>Clic droit</kbd>/<kbd>Échap</kbd> annuler · <kbd>Glisser ailleurs</kbd> tourner à 360° · <kbd>Molette</kbd> zoom · <kbd>C</kbd> vue d'ensemble</div>
-  <button class="glass" id="btnPause"><span class="ico">☰</span>Menu</button>
-  <canvas class="glass" id="mini" width="360" height="360" aria-label="Mini-carte du trou"></canvas>
-  <div class="glass" id="emotes"><button data-e="1" title="Bravo (touche 1)">👏<small>1</small></button><button data-e="2" title="Rire (touche 2)">😂<small>2</small></button><button data-e="3" title="Rage (touche 3)">😡<small>3</small></button><button data-e="4" title="GG (touche 4)">GG<small>4</small></button></div>
+  <button class="roundbtn" id="btnPause" aria-label="Pause"><svg class="ic"><use href="#i-pause"/></svg></button>
+  <canvas id="mini" width="300" height="300" aria-label="Mini-carte du trou"></canvas>
+  <div id="board"></div>
+  <div id="timer" hidden><b id="timerS">25</b><span id="timerTxt">secondes avant +5 coups</span></div>
+  <div class="idle" id="power"><span class="pw-l" hidden><small id="pwLastTxt">Dernier coup : —</small></span><div class="pw-bar" id="pwBar"><div id="powerFill"></div><i id="pwLast" hidden></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i></div><div class="pw-r"><b id="powerPct">0%</b><span id="pwM">≈ 0 m</span></div></div>
+  <div id="hint" hidden></div>
+  <div id="emotes" hidden><button data-e="1" title="Bravo (1)"><svg class="ic"><use href="#i-clap"/></svg></button><button data-e="2" title="Rire (2)"><svg class="ic"><use href="#i-laugh"/></svg></button><button data-e="3" title="Rage (3)"><svg class="ic"><use href="#i-angry"/></svg></button><button data-e="4" title="GG (4)">GG</button></div>
 </div>
-<div class="glass" id="fps" hidden>– FPS</div>
+<div id="fps" hidden>– FPS</div>
 <div id="fade"></div>
 
 <div id="toast"></div>
-<div id="msg" class="glass"></div>
+<div id="msg"></div>
 
-<div class="modal" id="mBetween" hidden><div class="glass"><h2 id="bTitle">Trou terminé</h2><div class="res" id="bRes"></div><p class="note" id="bNote">Trou suivant dans un instant…</p></div></div>
+<div class="modal" id="mBetween" hidden><div class="wood"><h2 class="carved" id="bTitle">Trou terminé</h2><div class="res" id="bRes"></div><p class="wood-note" id="bNote">Trou suivant dans un instant…</p></div></div>
 
-<div class="modal" id="mFinal" hidden><div class="glass" style="width:min(820px,100%)">
-  <h2>Carte de score</h2>
+<div class="modal" id="mFinal" hidden><div class="wood wide">
+  <h2 class="carved">Carte de score</h2>
   <div class="podium" id="podium"></div>
   <div class="scard-wrap"><table class="scard" id="scard"></table></div>
-  <div class="row"><button class="btn" id="btnAgain">Revenir au groupe</button><button class="btn ghost" id="btnQuit2">Menu principal</button></div>
+  <div class="wood-btns"><button class="b3 white small" id="btnQuit2"><svg class="ic"><use href="#i-exit"/></svg>Menu</button><button class="b3 green big" id="btnAgain"><svg class="ic"><use href="#i-play"/></svg>Revenir au groupe</button></div>
 </div></div>
 
-<div class="modal" id="mPause" hidden><div class="glass">
-  <h2>Pause</h2>
-  <p class="note">La partie continue pour les autres joueurs pendant que ce menu est ouvert.</p>
+<div class="modal" id="mPause" hidden><div class="wood">
+  <h2 class="carved">Pause</h2>
   <div class="optgrid">
     <label class="lbl" for="opSens">Sensibilité de la souris</label><input type="range" id="opSens" min="20" max="250" step="5">
     <label class="lbl" for="opQual">Qualité graphique</label><select id="opQual"><option value="auto">Automatique</option><option value="0">Basse</option><option value="1">Moyenne</option><option value="2">Haute</option></select>
   </div>
-  <p class="note">Touches : <b>Maj</b> visée précise · <b>Tab</b> vue de dessus · <b>1 à 4</b> émotes · <b>F2</b> images/seconde.</p>
-  <div class="row"><button class="btn alt" id="btnResume">Reprendre</button></div>
-  <button class="btn ghost" id="btnQuit">Quitter la partie</button>
+  <p class="wood-note">Maj : visée précise · Tab : vue de dessus · C : vue d'ensemble · 1 à 4 : émotes · Échap : pause</p>
+  <div class="wood-btns"><button class="b3 white small" id="btnQuit"><svg class="ic"><use href="#i-exit"/></svg>Quitter</button><button class="b3 green big" id="btnResume"><svg class="ic"><use href="#i-play"/></svg>Reprendre</button></div>
 </div></div>
 
 <div id="loading"><div class="ld-stage"><div class="ld-cup"></div><div class="ld-shadow"></div><div class="ld-ball"></div></div><span id="ldTxt">Chargement des parcours…</span><div class="ld-bar"><i></i></div><span id="ldTip"></span></div>
@@ -382,14 +494,14 @@ const ARTIFACT_URL = '';
 const CS = 3;            // taille d'une case du parcours (1 unité = 1 m)
 // taille de chaque trou : P = petit (tracé x1), M = moyen (x2), G = grand (x3) ; même motif dans chaque monde
 const SIZE_PATTERN = "MMGGMMGGMG", SIZE_SCALE = {P:1,M:2,G:3}, SIZE_NAME = {P:"Petit",M:"Moyen",G:"Grand"};
-const BR = 0.095;        // rayon de la balle (plus petite)
-const CR = 0.25;         // rayon du trou
-const CUPD = 0.34;       // profondeur du trou
+const BR = 0.19;         // rayon de la balle (x2 : tout est plus gros sur la piste)
+const CR = 0.4;          // rayon du trou
+const CUPD = 0.5;        // profondeur du trou
 const MAXV = 30;         // vitesse max d'un tir
 const MAXPULL = 3.0;     // distance de tir maximale (m) pour 100 %
 const GRAV = 12;
-const WALLH = 0.28;      // hauteur des murets au-dessus de la pelouse
-const WT = 0.24;         // épaisseur des bordures
+const WALLH = 0.42;      // hauteur des murets au-dessus de la pelouse
+const WT = 0.34;         // épaisseur des bordures
 const LV = 0.8;          // hauteur d'un étage (rampes)
 const MAXS = Infinity;   // nombre de coups illimité
 const TIMER = 25;        // secondes après le premier qui finit
@@ -582,19 +694,19 @@ function buildHole(idx){
     else if(ty==='bump'){const k=kAt(f[1]),n=(f[2]||1)*2;const reg=[];for(let kk=k-1;kk<=k+1;kk++)for(const c of cross(kk))reg.push(c);
       let placed=0;for(let tries=0;tries<140&&placed<n;tries++){const c=reg[Math.floor(rng()*reg.length)];const cell=cells.get(K(c[0],c[1]));if(!cell||cell.t==='w')continue;
         const x=(c[0]+.25+rng()*.5)*CS,z=(c[1]+.25+rng()*.5)*CS;if(!farFromEnds(x,z,1.6))continue;
-        if(hd.bumpers.some(b=>Math.hypot(b.x-x,b.z-z)<1.0))continue;hd.bumpers.push({x,z,r:.28,e:1.3,hit:0});placed++;}}
+        if(hd.bumpers.some(b=>Math.hypot(b.x-x,b.z-z)<1.5))continue;hd.bumpers.push({x,z,r:.45,e:1.3,hit:0});placed++;}}
     else if(ty==='block'){const k=kAt(f[1]);const c=crossC(k),p=perp(k),Wd=crossW(k),side=rng()<.5?-1:1;const hx=Wd*.19;
-      hd.boxes.push({kind:'block',cx:c[0]+p[0]*side*(Wd/2-hx),cz:c[1]+p[1]*side*(Wd/2-hx),hx,hz:.28,hy:.21,a:Math.atan2(p[1],p[0]),e:.7});}
+      hd.boxes.push({kind:'block',cx:c[0]+p[0]*side*(Wd/2-hx),cz:c[1]+p[1]*side*(Wd/2-hx),hx,hz:.4,hy:.32,a:Math.atan2(p[1],p[0]),e:.7});}
     else if(ty==='mill'){const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k);const w=(f[2]||1.35)*(rng()<.5?1:-1),a0=rng()*Math.PI;
-      hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.42,hz:.07,hy:.1,lift:.03,a:a0,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+w*t})});
-      hd.bumpers.push({x:c[0],z:c[1],r:.16,e:.6,hub:true,hit:0});}
+      hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.42,hz:.12,hy:.17,lift:.03,a:a0,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+w*t})});
+      hd.bumpers.push({x:c[0],z:c[1],r:.26,e:.6,hub:true,hit:0});}
     else if(ty==='spin'){const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k);const w=1.1*(rng()<.5?1:-1),a0=rng()*Math.PI;
-      for(const off of [0,Math.PI/2])hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.4,hz:.07,hy:.1,lift:.03,a:a0+off,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+off+w*t})});
-      hd.bumpers.push({x:c[0],z:c[1],r:.17,e:.6,hub:true,hit:0});}
+      for(const off of [0,Math.PI/2])hd.boxes.push({kind:'mill',cx:c[0],cz:c[1],hx:Wd*.4,hz:.12,hy:.17,lift:.03,a:a0+off,e:.75,motion:t=>({cx:c[0],cz:c[1],a:a0+off+w*t})});
+      hd.bumpers.push({x:c[0],z:c[1],r:.28,e:.6,hub:true,hit:0});}
     else if(ty==='gate'){const k=kAt(f[1]);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),per=3+rng()*1.2,ph=rng()*6.28,hx=Wd/4;
-      for(const s of [-1,1])hd.boxes.push({kind:'gate',cx:c[0]+p[0]*s*hx,cz:c[1]+p[1]*s*hx,hx:hx,hz:.16,hy:.25,a,e:.6,motion:t=>{const o=Math.max(0,Math.sin(t*6.283/per+ph))*hx*.92;const q=s*(hx+o);return{cx:c[0]+p[0]*q,cz:c[1]+p[1]*q,a};}});}
+      for(const s of [-1,1])hd.boxes.push({kind:'gate',cx:c[0]+p[0]*s*hx,cz:c[1]+p[1]*s*hx,hx:hx,hz:.24,hy:.36,a,e:.6,motion:t=>{const o=Math.max(0,Math.sin(t*6.283/per+ph))*hx*.92;const q=s*(hx+o);return{cx:c[0]+p[0]*q,cz:c[1]+p[1]*q,a};}});}
     else if(ty==='mover'){const k=kAt(f[1]);const c=crossC(k),p=perp(k),Wd=crossW(k);const A=Math.max(.2,Wd/2-.55),ph=rng()*6.28,per=2.6+rng()*1.4,a=Math.atan2(p[1],p[0]);
-      hd.boxes.push({kind:'mover',cx:c[0],cz:c[1],hx:.45,hz:.22,hy:.21,a,e:.8,motion:t=>{const s=Math.sin(t*6.283/per+ph)*A;return{cx:c[0]+p[0]*s,cz:c[1]+p[1]*s,a};}});}
+      hd.boxes.push({kind:'mover',cx:c[0],cz:c[1],hx:.7,hz:.34,hy:.32,a,e:.8,motion:t=>{const s=Math.sin(t*6.283/per+ph)*A;return{cx:c[0]+p[0]*s,cz:c[1]+p[1]*s,a};}});}
     else if(ty==='boost'){const k=kAt(f[1]);const c=crossC(k),p=perp(k),d=dirAt(k),Wd=crossW(k);
       hd.boosts.push({cx:c[0],cz:c[1],hx:Wd*.4,hz:.6,a:Math.atan2(p[1],p[0]),dx:d[0],dz:d[1]});}
     else if(ty==='hill'||ty==='dip'){const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k);hd.hills.push({x:c[0],z:c[1],a:(ty==='dip'?-1:1)*(f[2]||.8),s:Math.max(1.4,Wd*.55)});}
@@ -623,7 +735,7 @@ function buildHole(idx){
       const g0=best.gap[0],g1=best.gap[best.gap.length-1];const sx=(g0[0]+.5-best.dx*.5)*CS,sz=(g0[1]+.5-best.dz*.5)*CS,ex=(g1[0]+.5+best.dx*.5)*CS,ez=(g1[1]+.5+best.dz*.5)*CS;
       const len=Math.hypot(ex-sx,ez-sz),bx=(ex-sx)/len,bz=(ez-sz)/len;
       // variante « pad » : pas de pont, un pad rouge au bord pour sauter par-dessus l'eau (raccourci risqué)
-      if(f[2]==='pad')hd.pads.push({x:sx-bx*1.1,z:sz-bz*1.1,r:.45,trap:false});
+      if(f[2]==='pad')hd.pads.push({x:sx-bx*1.3,z:sz-bz*1.3,r:.7,trap:false});
       else hd.bridges.push({k:k1,cx:(sx+ex)/2,cz:(sz+ez)/2,hx:.5,hz:len/2+.25,a:Math.atan2(bx,-bz),bx,bz,len,shortcut:true});}
     else if(ty==='ledge'){// chemin de ronde : longer le haut d'un muret étroit, vide à gauche et à droite, un virage, puis on tombe sur la suite plus bas
       const n=2,kt=kAt(f[1]);let best=-1;
@@ -634,7 +746,7 @@ function buildHole(idx){
       for(let s=0;s<L&&best<0;s++){if(okK(kt-s))best=kt-s;else if(okK(kt+s))best=kt+s;}
       if(best<0)continue;const k=best,kA=k-n,kB=k+n;mark(kA-1,kB+2);
       for(const c of cells.values())if(c.own>=kA&&c.own<=kB)c.t='w';for(let kk=kA;kk<=kB;kk++)for(const [i,j] of cross(kk))setT(i,j,'w');
-      const lw=[.8,.72,.66,.62,.6][Math.floor(idx/10)],d1=dirAt(kA),d2=dirAt(kB),cA=crossC(kA),cB=crossC(kB);
+      const lw=[1.05,.98,.92,.88,.85][Math.floor(idx/10)],d1=dirAt(kA),d2=dirAt(kB),cA=crossC(kA),cB=crossC(kB);
       const cn=d1[0]!==0?[cB[0],cA[1]]:[cA[0],cB[1]];
       const leg=(sx,sz,ex,ez)=>{const len=Math.hypot(ex-sx,ez-sz),bx=(ex-sx)/len,bz=(ez-sz)/len;hd.bridges.push({k:kA,cx:(sx+ex)/2,cz:(sz+ez)/2,hx:lw/2,hz:len/2,a:Math.atan2(bx,-bz),bx,bz,len,ledge:true});};
       leg(cA[0]-d1[0]*(CS/2+.12),cA[1]-d1[1]*(CS/2+.12),cn[0]+d1[0]*lw/2,cn[1]+d1[1]*lw/2);
@@ -645,14 +757,14 @@ function buildHole(idx){
       hd.fans.push({cx:c[0],cz:c[1],hx:Wd/2,hz:CS*.5,a:Math.atan2(p[1],p[0]),fx:p[0]*side,fz:p[1]*side,str:6+Math.floor(idx/10)*1.5,w:Wd,sx:c[0]-p[0]*side*(Wd/2+.55),sz:c[1]-p[1]*side*(Wd/2+.55)});}
     else if(ty==='slalom'){const k=kAt(f[1]);if(used.has(k)||used.has(k-1)||used.has(k+1)||k<2||k>L-3)continue;mark(k-1,k+1);const s0=rng()<.5?1:-1;
       for(let q=-1;q<=1;q++){const kk=k+q,c=crossC(kk),p=perp(kk),Wd=crossW(kk),side=(q===0?1:-1)*s0,hx=Wd*.3;
-        hd.boxes.push({kind:'block',cx:c[0]+p[0]*side*(Wd/2-hx),cz:c[1]+p[1]*side*(Wd/2-hx),hx,hz:.3,hy:.21,a:Math.atan2(p[1],p[0]),e:.7});}}
+        hd.boxes.push({kind:'block',cx:c[0]+p[0]*side*(Wd/2-hx),cz:c[1]+p[1]*side*(Wd/2-hx),hx,hz:.42,hy:.32,a:Math.atan2(p[1],p[0]),e:.7});}}
     else if(ty==='pendulum'){const k=kAt(f[1]);if(used.has(k))continue;mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k);const A=Math.max(.3,Wd/2-.7),ph=rng()*6.28,per=1.6+rng()*.7,a=Math.atan2(p[1],p[0]);
-      hd.boxes.push({kind:'mover',cx:c[0],cz:c[1],hx:.6,hz:.3,hy:.24,a,e:.9,motion:t=>{const s=Math.sin(t*6.283/per+ph)*A;return{cx:c[0]+p[0]*s,cz:c[1]+p[1]*s,a};}});}
+      hd.boxes.push({kind:'mover',cx:c[0],cz:c[1],hx:.85,hz:.42,hy:.34,a,e:.9,motion:t=>{const s=Math.sin(t*6.283/per+ph)*A;return{cx:c[0]+p[0]*s,cz:c[1]+p[1]*s,a};}});}
     else if(ty==='windmill'){// moulin : pales verticales qui balaient le passage, on passe entre deux pales
       const k=straight(f[1],1,1);if(k<0){hd.miss.push(ty);continue;}mark(k-1,k+1);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),w=(1+rng()*.5)*(rng()<.5?1:-1),r0=rng()*6.28,hub=1.05;
       // piliers de l'arche : solides (même taille que le visuel)
       const W2=Math.min(1.05,Wd*.46)+.35;for(const s of [-1,1])hd.solids.push({kind:'pillar',cx:c[0]+p[0]*s*W2,cz:c[1]+p[1]*s*W2,hx:.15,hz:.15,h:hub+.5,a});
-      for(const off of [0,Math.PI/2])hd.boxes.push({kind:'wblade',first:off===0,cx:c[0],cz:c[1],hx:Math.min(1.05,Wd*.46),hz:.09,hy:.07,lift:hub-.07,hub,a,e:.6,roll:r0+off,motion:t=>({cx:c[0],cz:c[1],a,roll:r0+off+w*t})});}
+      for(const off of [0,Math.PI/2])hd.boxes.push({kind:'wblade',first:off===0,cx:c[0],cz:c[1],hx:Math.min(1.05,Wd*.46),hz:.14,hy:.1,lift:hub-.1,hub,a,e:.6,roll:r0+off,motion:t=>({cx:c[0],cz:c[1],a,roll:r0+off+w*t})});}
     else if(ty==='ferry'){// plateforme mobile au-dessus d'un trou d'eau
       const k=straight(f[1],1,2);if(k<0){hd.miss.push(ty);continue;}mark(k-1,k+2);for(const [i,j] of cross(k+1))setT(i,j,'w');
       const c=crossC(k+1),p=perp(k+1),Wd=crossW(k+1),a=Math.atan2(p[1],p[0]),hx=Math.max(.75,Wd*.27),A=Math.max(0,Wd/2-hx),per=3+rng()*1.5,ph=rng()*6.28;
@@ -672,7 +784,7 @@ function buildHole(idx){
       hd.boxes.push({kind:'vanish',floor:true,centered:true,cx,cz,hx:Wd/2-.04,hz:L/2,hy,lift:-2*hy-.003,a,e:.15,p,
         sig:t=>{const u=cyc(t,T,ph);return u<2.2?0:u<3?1:u<4.7?2:1;},motion:t=>({cx,cz,a,dy:dyf(t)})});}
     else if(ty==='risewall'){// mur qui sort du sol puis redescend
-      const k=straight(f[1],1,1);if(k<0){hd.miss.push(ty);continue;}mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),T=4.6,ph=rng()*T,hy=.24,low=-(hy*2+.12);
+      const k=straight(f[1],1,1);if(k<0){hd.miss.push(ty);continue;}mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),T=4.6,ph=rng()*T,hy=.36,low=-(hy*2+.12);
       const dyf=t=>{const u=cyc(t,T,ph);return u<1.8?0:u<2.2?low*ease((u-1.8)/.4):u<4.1?low:low*(1-ease((u-4.1)/.5));};
       hd.boxes.push({kind:'risewall',centered:true,cx:c[0],cz:c[1],hx:Wd/2-.01,hz:.14,hy,lift:0,a,e:.6,p,
         sig:t=>{const u=cyc(t,T,ph);return u<1.8?2:u<2.2?1:u<3.5?0:1;},motion:t=>({cx:c[0],cz:c[1],a,dy:dyf(t)})});}
@@ -680,9 +792,9 @@ function buildHole(idx){
       const k=kAt(f[1]);const c=crossC(k),Wd=crossW(k),R=Math.min(1.35,Wd*.36),w=(.9+rng()*.5)*(rng()<.5?1:-1),a0=rng()*6.28,hy=.03;
       hd.boxes.push({kind:'turntable',floor:true,shape:'cyl',centered:true,cx:c[0],cz:c[1],hx:R,hz:R,hy,lift:.012-2*hy,a:a0,e:.2,spin:w,motion:t=>({cx:c[0],cz:c[1],a:a0+w*t})});}
     else if(ty==='swing'){// pendule qui balaie le passage
-      const k=straight(f[1],1,1);if(k<0){hd.miss.push(ty);continue;}mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),Hp=1.9,Lr=Hp-.22,A=Math.asin(Math.min(.9,(Wd/2-.15)/Lr)),T=2.6+rng()*.6,ph=rng()*T;
+      const k=straight(f[1],1,1);if(k<0){hd.miss.push(ty);continue;}mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),a=Math.atan2(p[1],p[0]),Hp=2.3,Lr=Hp-.32,A=Math.asin(Math.min(.9,(Wd/2-.15)/Lr)),T=2.6+rng()*.6,ph=rng()*T;
       const th=t=>A*Math.sin(6.2832*(t+ph)/T);
-      hd.boxes.push({kind:'swing',centered:true,cx:c[0],cz:c[1],hx:.2,hz:.26,hy:.2,lift:.02,a,e:.85,Lr,Wd,p,
+      hd.boxes.push({kind:'swing',centered:true,cx:c[0],cz:c[1],hx:.3,hz:.38,hy:.3,lift:.02,a,e:.85,Lr,Wd,p,
         motion:t=>{const q=th(t);return{cx:c[0]+p[0]*Lr*Math.sin(q),cz:c[1]+p[1]*Lr*Math.sin(q),a,roll:q,dy:Lr*(1-Math.cos(q))};}});}
     else if(ty==='trapdoor'){// trappe qui s'ouvre dans le sol au-dessus d'un trou
       const k=straight(f[1],1,1);if(k<0){hd.miss.push(ty);continue;}mark(k-1,k+1);for(const [i,j] of cross(k))setT(i,j,'t');
@@ -693,9 +805,9 @@ function buildHole(idx){
         motion:t=>{const q=phi(t);return{cx:H0[0]-p[0]*Wd/2*Math.cos(q),cz:H0[1]-p[1]*Wd/2*Math.cos(q),a,roll:q,dy:-(Wd/2)*Math.sin(q)};}});}
     // ---------- autres mécaniques ----------
     else if(ty==='pad'||ty==='padtrap'){// pad rouge : saut en arc selon la vitesse ; le piège est près d'un bord ouvert
-      const k=kAt(f[1]);mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),off=ty==='padtrap'?(Wd/2-.65)*(f[2]||1):0;hd.pads.push({x:c[0]+p[0]*off,z:c[1]+p[1]*off,r:.45,trap:ty==='padtrap'});}
+      const k=kAt(f[1]);mark(k,k);const c=crossC(k),p=perp(k),Wd=crossW(k),off=ty==='padtrap'?(Wd/2-.65)*(f[2]||1):0;hd.pads.push({x:c[0]+p[0]*off,z:c[1]+p[1]*off,r:.7,trap:ty==='padtrap'});}
     else if(ty==='padup'){// pad devant une marche haute : seul un saut bien dosé monte sur le plateau
-      const k=straight(f[1],2,2);if(k<0){hd.miss.push(ty);continue;}mark(k-2,k+2);const c=crossC(k);hd.pads.push({x:c[0],z:c[1],r:.5,up:true});levelDrops.set(k+1,-(f[2]||.6));padupKs.add(k+1);}
+      const k=straight(f[1],2,2);if(k<0){hd.miss.push(ty);continue;}mark(k-2,k+2);const c=crossC(k);hd.pads.push({x:c[0],z:c[1],r:.75,up:true});levelDrops.set(k+1,-(f[2]||.6));padupKs.add(k+1);}
     else if(ty==='pipe'){// tuyau : on rentre dedans et on ressort plus loin sur le parcours
       const k1=kAt(f[1]),k2=kAt(f[2]);mark(k1,k1);mark(k2,k2);const c1=crossC(k1),p1=perp(k1),W1=crossW(k1),side=(f[3]||(rng()<.5?-1:1)),off=Math.max(0,W1/2-.8);const c2=crossC(k2),d2=dirAt(k2);
       hd.portals.push({ax:c1[0]+p1[0]*side*off,az:c1[1]+p1[1]*side*off,bx:c2[0],bz:c2[1],dx:d2[0],dz:d2[1],pipe:true});}
@@ -711,7 +823,7 @@ function buildHole(idx){
     else if(ty==='climb'){// rampe raide à monter : trop doux on redescend, trop fort on passe par-dessus le plateau
       const k=straight(f[1],sp.w,sp.w+1);if(k<0){hd.miss.push(ty);continue;}mark(k-sp.w,k+sp.w);levelRamps.set(k,f[2]||1.6);}
     else if(ty==='pen'){// enclos en planches autour du trou : on entre par les passages en arche (un par côté) ou les petits jours aux coins
-      const S2=Math.min(2.6,sp.w*CS*.45),gap=.6,cx=hd.cup.x,cz=hd.cup.z,T=.11,H2=.34,rot=f[1]||0;hd.penArches=hd.penArches||[];
+      const S2=Math.min(3.4,sp.w*CS*.55),gap=.95,cx=hd.cup.x,cz=hd.cup.z,T=.14,H2=.55,rot=f[1]||0;hd.penArches=hd.penArches||[];
       for(let s=0;s<4;s++){const a=rot+s*Math.PI/2,nx=Math.cos(a),nz=Math.sin(a),tx=-nz,tz=nx,seg=(S2-gap)/2-.12;
         for(const q of [-1,1]){const m=q*(gap/2+seg/2);hd.solids.push({kind:'pen',cx:cx+nx*S2/2+tx*m,cz:cz+nz*S2/2+tz*m,hx:T,hz:seg/2,h:H2,a:a});}
         hd.penArches.push({cx:cx+nx*S2/2,cz:cz+nz*S2/2,a,gap,T,H2});}}
@@ -934,7 +1046,7 @@ class Phys{
     const spd=Math.hypot(b.linvel().x,b.linvel().y,b.linvel().z),nSub=Math.min(10,Math.max(1,Math.ceil(spd*dt/(BR*.5))));this.world.timestep=dt/nSub;
     // bascules : l'angle suit la position de la balle sur la planche (déterministe, même calcul chez tout le monde)
     for(const k of this.see){const s=k.s,al=(p.x-s.cx)*s.dx+(p.z-s.cz)*s.dz,ac=Math.abs((p.x-s.cx)*-s.dz+(p.z-s.cz)*s.dx),on=Math.abs(al)<s.hz&&ac<s.hx+.1&&p.y<k.y+s.hy+s.hpiv*2+.5;
-      const tgt=on?(al>0?-s.maxA:s.maxA):k.ang;k.ang+=clamp(tgt-k.ang,-1.1*dt,1.1*dt);}
+      const tgt=on&&Math.abs(al)>.3?(al>0?-s.maxA:s.maxA):k.ang;k.ang+=clamp(tgt-k.ang,-1.1*dt,1.1*dt);}
     for(let i=1;i<=nSub;i++){this.setObstacles(t0+dt*i/nSub);for(const k of this.see)k.body.setNextKinematicRotation(obstacleQuat(k.s.a,0,k.ang));this.world.step();}
     let q=b.translation();let u=b.linvel();
     // pads rouges : la balle saute en arc, d'autant plus haut et loin qu'elle arrive vite
@@ -1353,24 +1465,24 @@ function buildScene(hd){
   const fgrp=new THREE.Group();fgrp.position.set(hd.cup.x,cy,hd.cup.z);course.add(fgrp);
   // mât rayé rouge et blanc, boule blanche au sommet, petit drapeau rouge et blanc
   const poleTex=canvasTex(16,256,(x,w,h)=>{for(let i=0;i<12;i++){x.fillStyle=i%2?'#ffffff':'#e8242a';x.fillRect(0,i*h/12,w,h/12);}});
-  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,1.9,12),mat(0xffffff,{map:poleTex,roughness:.4}));pole.position.y=.95-CUPD*.3;pole.castShadow=true;fgrp.add(pole);
-  const knob=new THREE.Mesh(GEO.sph,mat(0xffffff,{roughness:.3}));knob.scale.setScalar(.055);knob.position.y=1.9-CUPD*.3+.03;fgrp.add(knob);
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,2.6,12),mat(0xffffff,{map:poleTex,roughness:.4}));pole.position.y=1.3-CUPD*.3;pole.castShadow=true;fgrp.add(pole);
+  const knob=new THREE.Mesh(GEO.sph,mat(0xffffff,{roughness:.3}));knob.scale.setScalar(.08);knob.position.y=2.6-CUPD*.3+.04;fgrp.add(knob);
   const flagTex=canvasTex(128,64,(x,w,h)=>{x.fillStyle='#e8242a';x.fillRect(0,0,w,h);x.fillStyle='#ffffff';x.beginPath();x.moveTo(0,h*.38);x.lineTo(w,h*.18);x.lineTo(w,h*.42);x.lineTo(0,h*.62);x.fill();});
-  const flagGeo=new THREE.PlaneGeometry(.55,.34,14,2);flagGeo.translate(.275,0,0);const flag=new THREE.Mesh(flagGeo,mat(0xffffff,{map:flagTex,side:THREE.DoubleSide,roughness:.6}));flag.position.y=1.66-CUPD*.3;flag.castShadow=true;
+  const flagGeo=new THREE.PlaneGeometry(.8,.5,14,2);flagGeo.translate(.4,0,0);const flag=new THREE.Mesh(flagGeo,mat(0xffffff,{map:flagTex,side:THREE.DoubleSide,roughness:.6}));flag.position.y=2.28-CUPD*.3;flag.castShadow=true;
   const flagPivot=new THREE.Group();flagPivot.add(flag);fgrp.add(flagPivot);anim.flag={grp:fgrp,pivot:flagPivot,geo:flagGeo,base:flagGeo.attributes.position.array.slice()};
   const pulse=new THREE.Mesh(new THREE.RingGeometry(.9,1,48),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.5,depthWrite:false}));pulse.rotation.x=-Math.PI/2;pulse.position.set(hd.cup.x,cy+.02,hd.cup.z);course.add(pulse);anim.pulse=pulse;
   // losange jaune et noir accroché au mât, avec la distance au trou
   const dTexC=document.createElement('canvas');dTexC.width=192;dTexC.height=192;const dTex=new THREE.CanvasTexture(dTexC);dTex.colorSpace=THREE.SRGBColorSpace;
-  const dist=new THREE.Sprite(new THREE.SpriteMaterial({map:dTex,depthTest:false,transparent:true,toneMapped:false}));dist.scale.set(.62,.62,1);dist.position.set(0,1.0,0);dist.renderOrder=9;fgrp.add(dist);anim.dist={spr:dist,cv:dTexC,tex:dTex,v:-1};
+  const dist=new THREE.Sprite(new THREE.SpriteMaterial({map:dTex,depthTest:false,transparent:true,toneMapped:false}));dist.scale.set(.85,.85,1);dist.position.set(0,1.35,0);dist.renderOrder=9;fgrp.add(dist);anim.dist={spr:dist,cv:dTexC,tex:dTex,v:-1};
   // champignons / butoirs
   for(const b of hd.bumpers){const grp=new THREE.Group();grp.position.set(b.x,hAt(hd,b.x,b.z),b.z);
     if(b.hub){// moyeu : poteau rayé avec chapeau doré (même cylindre que le collider)
       const m=new THREE.Mesh(GEO.cyl,mat(0xf6f1e6,{roughness:.4}));m.scale.set(b.r,.6,b.r);m.position.y=.3;m.castShadow=true;grp.add(m);
       for(const y of [.12,.34]){const r=new THREE.Mesh(GEO.cyl,mat(W.acc,{roughness:.4}));r.scale.set(b.r+.004,.08,b.r+.004);r.position.y=y;grp.add(r);}
       const top=new THREE.Mesh(GEO.sph,mat(0xffc933,{metal:true,roughness:.3}));top.scale.set(b.r*1.1,b.r*.7,b.r*1.1);top.position.y=.6;top.castShadow=true;grp.add(top);}
-    else{const st=new THREE.Mesh(GEO.cyl,mat(0xf6efe0));st.scale.set(b.r*.8,.34,b.r*.8);st.position.y=.17;st.castShadow=true;grp.add(st);
-      const cap=new THREE.Mesh(GEO.sph,mat(W.bump,{roughness:.45,emissive:W.stars?W.bump:0,emissiveIntensity:W.stars?.35:0}));cap.scale.set(b.r*1.08,b.r*.75,b.r*1.08);cap.position.y=.36;cap.castShadow=true;grp.add(cap);
-      for(let s=0;s<4;s++){const a=s*1.7+.4,sp2=new THREE.Mesh(GEO.sph,mat(0xffffff));sp2.scale.setScalar(b.r*(s?.17:.2));sp2.position.set(Math.cos(a)*b.r*(s?.72:0),.36+b.r*(s?.55:.75),Math.sin(a)*b.r*(s?.72:0));grp.add(sp2);}}
+    else{const st=new THREE.Mesh(GEO.cyl,mat(0xf6efe0));st.scale.set(b.r*.8,.5,b.r*.8);st.position.y=.25;st.castShadow=true;grp.add(st);
+      const cap=new THREE.Mesh(GEO.sph,mat(W.bump,{roughness:.45,emissive:W.stars?W.bump:0,emissiveIntensity:W.stars?.35:0}));cap.scale.set(b.r*1.08,b.r*.75,b.r*1.08);cap.position.y=.55;cap.castShadow=true;grp.add(cap);
+      for(let s=0;s<4;s++){const a=s*1.7+.4,sp2=new THREE.Mesh(GEO.sph,mat(0xffffff));sp2.scale.setScalar(b.r*(s?.17:.2));sp2.position.set(Math.cos(a)*b.r*(s?.72:0),.55+b.r*(s?.55:.75),Math.sin(a)*b.r*(s?.72:0));grp.add(sp2);}}
     course.add(grp);anim.bumps.push({b,grp});}
   // obstacles : modèles Kenney quand ils sont chargés
   for(const o of hd.boxes){if(o.kind==='corner')continue;if(o.centered){const g2=timingVisual(o,W,hd);course.add(g2);anim.boxes.push({o,grp:g2});continue;}const grp=new THREE.Group();let m=null;
@@ -1555,10 +1667,10 @@ function buildDecor(hd,W,wy){const rng=mulberry32(hd.idx*97+5),T=anim.tod;themeL
     if(cellAt(hd,hd.tee.x+p[0]*(half+.4),hd.tee.z+p[1]*(half+.4)))p=[d[1],-d[0]];
     const x=hd.tee.x+p[0]*(half+.55)+d[0]*.4,z=hd.tee.z+p[1]*(half+.55)+d[1]*.4;
     const g=new THREE.Group();g.position.set(x,hAt(hd,hd.tee.x+p[0]*(half-.1),hd.tee.z+p[1]*(half-.1))-.02,z);g.rotation.y=Math.atan2(-p[0],-p[1]);const wm=mat(0x8a5a2e);
-    for(const px of [-.42,.42]){const p=new THREE.Mesh(GEO.box,wm);p.scale.set(.08,.9,.08);p.position.set(px,.45,0);p.castShadow=true;g.add(p);}
+    for(const px of [-.3,.3]){const p=new THREE.Mesh(GEO.box,wm);p.scale.set(.07,.6,.07);p.position.set(px,.3,0);p.castShadow=true;g.add(p);}
     const no=(S.curI>=0?S.curI+1:hd.idx+1);const tx=canvasTex(256,160,(x,w,h)=>{x.fillStyle='#b7834d';x.fillRect(0,0,w,h);for(let i=0;i<5;i++){x.fillStyle=i%2?'rgba(0,0,0,.08)':'rgba(255,255,255,.06)';x.fillRect(0,i*32,w,30);}
       x.strokeStyle='#5a3a1a';x.lineWidth=10;x.strokeRect(5,5,w-10,h-10);x.textAlign='center';x.fillStyle='#fff7e6';x.font='700 70px Fredoka, sans-serif';x.fillText('Trou '+no,w/2,82);x.font='800 34px Nunito, sans-serif';x.fillText('Par '+hd.spec.par,w/2,132);});
-    const board=new THREE.Mesh(new THREE.BoxGeometry(1.15,.72,.07),[wm,wm,wm,wm,mat(0xffffff,{map:tx}),wm]);board.position.y=.95;board.castShadow=true;g.add(board);course.add(g);}
+    const board=new THREE.Mesh(new THREE.BoxGeometry(.8,.5,.06),[wm,wm,wm,wm,mat(0xffffff,{map:tx}),wm]);board.position.y=.68;board.castShadow=true;g.add(board);course.add(g);anim.sign=g;}
   // transitions : petite bordure de pierre entre gazon, sable et glace
   {const bm=mat(0xcfc8b8,{map:TEX.stone,roughness:.9}),pos=[];for(const c of hd.cells.values()){if(c.t==='w')continue;for(const [di,dj] of [[1,0],[0,1]]){const n=hd.cells.get(hd.K(c.i+di,c.j+dj));if(!n||n.t==='w'||n.t===c.t)continue;
       const x=(c.i+di)*CS,z=(c.j+dj)*CS;pos.push(di?[x,(c.j+.5)*CS,0]:[(c.i+.5)*CS,z,1]);}}
@@ -1695,8 +1807,8 @@ function buildMechanics(hd,W){const base=(x,z)=>hAt(hd,x,z);anim.pads=[];anim.se
   {const wm=mat(0xffffff,{map:TEX.wood,roughness:.7});
     for(const s of hd.solids){if(s.kind!=='pen')continue;const m=new THREE.Mesh(boxGeo(s.hx*2,s.h,s.hz*2,.9),wm);m.position.set(s.cx,base(s.cx,s.cz)+s.h/2,s.cz);m.rotation.y=-s.a;m.castShadow=true;m.receiveShadow=true;course.add(m);}
     for(const p of hd.penArches||[]){const y=base(p.cx,p.cz),g=new THREE.Group();g.position.set(p.cx,y,p.cz);g.rotation.y=-p.a;
-      const lin=new THREE.Mesh(boxGeo(p.T*2,p.H2-.24,p.gap+.06,.9),wm);lin.position.y=.24+(p.H2-.24)/2;lin.castShadow=true;g.add(lin);
-      const arc=new THREE.Mesh(new THREE.CylinderGeometry(p.gap/2,p.gap/2,p.T*2,20,1,false,0,Math.PI),wm);arc.rotation.z=Math.PI/2;arc.rotation.y=Math.PI/2;arc.scale.set(1,1,.42);arc.position.y=.24;g.add(arc);course.add(g);}}
+      const lin=new THREE.Mesh(boxGeo(p.T*2,p.H2-.42,p.gap+.06,.9),wm);lin.position.y=.42+(p.H2-.42)/2;lin.castShadow=true;g.add(lin);
+      const arc=new THREE.Mesh(new THREE.CylinderGeometry(p.gap/2,p.gap/2,p.T*2,20,1,false,0,Math.PI),wm);arc.rotation.z=Math.PI/2;arc.rotation.y=Math.PI/2;arc.scale.set(1,1,.4);arc.position.y=.42;g.add(arc);course.add(g);}}
   // contremarches d'escalier en pierre
   for(const r of hd.risers){const len=Math.hypot(r.bx-r.ax,r.bz-r.az),h=r.top-r.bot;const m=new THREE.Mesh(boxGeo(r.nx?.08:len,h,r.nx?len:.08,1.2),mat(W.wall,{map:TEX.stone}));
     m.position.set((r.ax+r.bx)/2-r.nx*.04,r.bot+h/2,(r.az+r.bz)/2-r.nz*.04);m.receiveShadow=true;course.add(m);
@@ -1859,10 +1971,10 @@ const aimDots=new THREE.Group();scene.add(aimDots);aimDots.visible=false;
 const dotMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,depthTest:false,toneMapped:false});
 const dots=[];for(let i=0;i<40;i++){const d=new THREE.Mesh(GEO.sph,dotMat.clone());d.scale.setScalar(.045);d.renderOrder=6;aimDots.add(d);dots.push(d);}
 // cercle blanc en pointillés autour de la balle pendant la charge
-const ringPts=[];for(let i=0;i<=64;i++){const a=i/64*Math.PI*2;ringPts.push(new THREE.Vector3(Math.cos(a)*.55,0,Math.sin(a)*.55));}
+const ringPts=[];for(let i=0;i<=64;i++){const a=i/64*Math.PI*2;ringPts.push(new THREE.Vector3(Math.cos(a)*.55,0,Math.sin(a)*.85));}
 const aimRing=new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts),new THREE.LineDashedMaterial({color:0xffffff,dashSize:.09,gapSize:.07,depthTest:false,toneMapped:false,linewidth:2}));aimRing.computeLineDistances();aimRing.renderOrder=6;aimRing.visible=false;scene.add(aimRing);
 const aimRing2=aimRing.clone();aimRing2.scale.setScalar(1.02);scene.add(aimRing2);
-const myRing=new THREE.Mesh(new THREE.RingGeometry(.15,.2,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8,depthWrite:false}));myRing.rotation.x=-Math.PI/2;scene.add(myRing);
+const myRing=new THREE.Mesh(new THREE.RingGeometry(.3,.38,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.8,depthWrite:false}));myRing.rotation.x=-Math.PI/2;scene.add(myRing);
 const swing={on:false};
 // debug F3 : affiche les colliders Rapier en fil de fer pour vérifier qu'ils collent aux murs
 const dbgLines=new THREE.LineSegments(new THREE.BufferGeometry(),new THREE.LineBasicMaterial({vertexColors:true,depthTest:false,toneMapped:false,transparent:true}));dbgLines.renderOrder=20;dbgLines.frustumCulled=false;dbgLines.visible=false;scene.add(dbgLines);let dbgOn=false;
@@ -1873,13 +1985,13 @@ let shake=0,pullVis=0,snapT=0;
 // ball.y = hauteur du point de contact (bas de la balle)
 const ball={x:0,z:0,y:0,vx:0,vz:0,vy:0,air:false,falling:false,moving:false,holed:false,sinkT:0,lastX:0,lastZ:0,lastY:0,stillT:0,rollT:0,portalCd:0,hazT:0,hidden:false};
 let simT=0,physAcc=0;
-function placeBall(x,z,y){const yy=y==null?hAt(H,x,z):y;Object.assign(ball,{x,z,y:yy,vx:0,vz:0,vy:0,air:false,falling:false,moving:false,holed:false,sinkT:0,stillT:0,rollT:0,portalCd:0,hazT:0,hidden:false});if(PH)PH.place(x,yy,z);}
+function placeBall(x,z,y){const yy=y==null?hAt(H,x,z):y;Object.assign(ball,{x,z,y:yy,ppx:x,ppy:yy,ppz:z,vx:0,vz:0,vy:0,air:false,falling:false,moving:false,holed:false,sinkT:0,stillT:0,rollT:0,portalCd:0,hazT:0,hidden:false});if(PH)PH.place(x,yy,z);}
 function canShoot(){return S.mode==='play'&&H&&!ball.moving&&!ball.holed&&!S.done&&ball.hazT<=0&&cam.intro>=1&&$('mPause').hidden&&!swing.on;}
 // ----- horloge commune du groupe : l'hôte publie son heure, chacun estime l'écart (le meilleur des derniers échantillons)
 const clockS={off:0,samples:[],lastCk:0};
 function sharedTime(){return (Date.now()+clockS.off)/1000-1.79e9;}
 function clockSample(ck){if(!ck||ck===clockS.lastCk)return;clockS.lastCk=ck;clockS.samples.push(ck-Date.now()+((S.net&&S.net.rtt)||0));if(clockS.samples.length>8)clockS.samples.shift();
-  const best=Math.max(...clockS.samples);if(Math.abs(best-clockS.off)>30)clockS.off=best;}
+  const best=Math.max(...clockS.samples),dd=best-clockS.off;if(Math.abs(dd)>400)clockS.off=best;else if(Math.abs(dd)>4)clockS.off+=clamp(dd,-6,6);}
 setInterval(()=>{if(S.net&&S.isHost&&S.net.kind!=='local')setP({ck:Date.now()+clockS.off});},2000);
 // ----- tir : on envoie seulement le départ, la vitesse, l'heure commune et le numéro du coup ; chaque PC rejoue le même tir
 function shoot(dx,dz,p){
@@ -1916,12 +2028,14 @@ function ballStopped(){
   // position d'arrêt officielle (les autres corrigent en douceur si leur simulation diffère un peu)
   setP({rs:[S.shotN||0,ball.x,ball.y,ball.z]});saveRejoin();
 }
+// position affichée de la balle : interpolée entre les deux derniers pas de physique (pas d'à-coups selon les images)
+function ballDraw(){if(!ball.moving||!PH||ball.ppx==null)return{x:ball.x,y:ball.y,z:ball.z};const f=clamp((sharedTime()-PH.t)/PH.dt,0,1);return{x:ball.ppx+(ball.x-ball.ppx)*f,y:ball.ppy+(ball.y-ball.ppy)*f,z:ball.ppz+(ball.z-ball.ppz)*f};}
 // ----- moteur Rapier : pas fixe de 1/120 s, calé sur l'horloge commune (même nombre de pas chez tout le monde)
 function rapierUpdate(dt){
   const target=sharedTime();let guard=0;
   if(target-PH.t>2&&!ball.moving){PH.resetObstacles(target);return;}
   while(PH.t+PH.dt<=target&&guard++<120){
-    const pvx=ball.vx,pvz=ball.vz;const r=PH.step();
+    const pvx=ball.vx,pvz=ball.vz;ball.ppx=ball.x;ball.ppy=ball.y;ball.ppz=ball.z;const r=PH.step();
     ball.x=r.x;ball.y=r.y;ball.z=r.z;ball.vx=r.vx;ball.vz=r.vz;ball.vy=r.vy;
     if(PH.portal){PH.portal=false;SFX.portal();burst(r.x,r.y+.1,r.z,[0x3ee0ff,0xff8a3d,0xffffff],1.3,3.2,.9);portalFlash=.5;}
     if(PH.jumped){PH.jumped=false;SFX.jump();}
@@ -2077,9 +2191,11 @@ function flyPose(s){const e=s<.5?2*s*s:1-Math.pow(-2*s+2,2)/2,f=(1-e)*(H.L-1),k=
   return{tx:x,ty:y,tz:z,yaw:cam.flyYaw,pitch:.62,dist:8+H.spec.w*1.5};}
 function updateCamera(dt){
   if(!H)return;shake=Math.max(0,shake-dt*2.2);
+  if(S.mode==='lobby'&&stage.grp){cam.demo+=dt*.4;const c=stage.c;applyCam({tx:c.x,ty:c.y+.45,tz:c.z,yaw:Math.sin(cam.demo*.5)*.35,pitch:.2,dist:4.4});return;}
+  if(S.mode==='menu'&&H){cam.demo+=dt*.12;applyCam({tx:H.tee.x,ty:hAt(H,H.tee.x,H.tee.z)+.25,tz:H.tee.z,yaw:cam.demo,pitch:.3,dist:4.2});return;}
   if(S.mode==='final'&&podium.grp){cam.demo+=dt*.18;const c=podium.c;applyCam({tx:c.x,ty:c.y+1.1,tz:c.z,yaw:cam.demo,pitch:.22,dist:8.5});return;}
   if(S.mode!=='play'){cam.demo+=dt*.1;const b=H.bbox;applyCam({tx:b.cx+b.size*.12,ty:H.cupH,tz:b.cz,yaw:cam.demo,pitch:.6,dist:b.size*.7+8});return;}
-  const k=Math.min(1,dt*6);cur.tx+=(ball.x-cur.tx)*k;cur.ty+=(Math.max(ball.y,H.waterY+.5)-cur.ty)*k;cur.tz+=(ball.z-cur.tz)*k;
+  const k=Math.min(1,dt*6),bp=ballDraw();cur.tx+=(bp.x-cur.tx)*k;cur.ty+=(Math.max(bp.y,H.waterY+.5)-cur.ty)*k;cur.tz+=(bp.z-cur.tz)*k;
   // la caméra recule un peu quand la balle va vite
   const spd=ball.moving?Math.hypot(ball.vx,ball.vz):0;cam.speedZoom+=(Math.min(2.4,spd*.12)-cam.speedZoom)*Math.min(1,dt*2);
   const follow={tx:cur.tx,ty:cur.ty,tz:cur.tz,yaw:cam.yaw,pitch:cam.pitch,dist:cam.dist+cam.speedZoom};
@@ -2173,9 +2289,9 @@ function updateAim(dt,t){
   // aperçu de la trajectoire : seulement les 2 premiers mètres (rebonds compris), calculés avec la vraie physique
   const now=performance.now();if(!pv2.pts||now-pv2.at>60||Math.abs(pv2.p-p)>.004||pv2.dx!==dx||pv2.dz!==dz){pv2.pts=previewPath(dx,dz,p);pv2.at=now;pv2.p=p;pv2.dx=dx;pv2.dz=dz;}
   const pts=pv2.pts;aimDots.visible=p>.02;let n=0;
-  if(pts&&pts.length){const L=pts[pts.length-1][3];let j=0;for(let s=.18;s<=Math.min(2,L)&&n<dots.length;s+=.16){while(j<pts.length-1&&pts[j][3]<s)j++;const q=pts[j];dots[n].position.set(q[0],q[1]+.05,q[2]);n++;}}
-  else for(let s=.18;s<=2&&n<dots.length;s+=.16){dots[n].position.set(ball.x+dx*s,ball.y+.05,ball.z+dz*s);n++;}
-  dots.forEach((d,i)=>{if(i>=n){d.visible=false;return;}d.visible=true;const k=1-i/Math.max(1,n);d.material.opacity=.3+.65*k;d.material.color.copy(c);d.scale.setScalar(.03+.022*k+(p>.99?.012*Math.sin(t*14-i):0));});
+  if(pts&&pts.length){const L=pts[pts.length-1][3];let j=0;for(let s=.32;s<=Math.min(2,L)&&n<dots.length;s+=.16){while(j<pts.length-1&&pts[j][3]<s)j++;const q=pts[j];dots[n].position.set(q[0],q[1]+.05,q[2]);n++;}}
+  else for(let s=.32;s<=2&&n<dots.length;s+=.16){dots[n].position.set(ball.x+dx*s,ball.y+.05,ball.z+dz*s);n++;}
+  dots.forEach((d,i)=>{if(i>=n){d.visible=false;return;}d.visible=true;const k=1-i/Math.max(1,n);d.material.opacity=.3+.65*k;d.material.color.copy(c);d.scale.setScalar(.05+.03*k+(p>.99?.015*Math.sin(t*14-i):0));});
 }
 const fmtM=d=>'≈ '+(d<10?d.toFixed(1).replace('.',','):Math.round(d))+' m';
 const pv2={pts:null,at:0,p:-1,dx:0,dz:0};let PV=null,pvHd=null;
@@ -2194,7 +2310,7 @@ let lastPowDist=-1;
 // Chaque balle distante a son propre monde physique. On ne reçoit que les tirs (départ, vitesse, heure commune)
 // et la position d'arrêt officielle ; la trajectoire est recalculée ici, pas à pas, exactement comme chez le tireur.
 // Aucune position reçue n'est appliquée image par image.
-function ghostStep(gh){const ph=gh.ph,r=ph.step();gh.x=r.x;gh.y=r.y;gh.z=r.z;gh.vx=r.vx;gh.vz=r.vz;
+function ghostStep(gh){gh.ppx=gh.x;gh.ppy=gh.y;gh.ppz=gh.z;const ph=gh.ph,r=ph.step();gh.x=r.x;gh.y=r.y;gh.z=r.z;gh.vx=r.vx;gh.vz=r.vz;
   if(gh.holed||gh.hazT>0)return;
   if(r.impact>1.1&&gh.moving){const nb=H.bumpers.find(b=>!b.hub&&Math.hypot(b.x-r.x,b.z-r.z)<b.r+BR+.12);if(nb)nb.hit=.3;else{gh.av.squash(1,0,r.impact*.03);if(r.impact>6)gh.av.setMood('dizzy',1.6);}}
   const dc=Math.hypot(r.x-H.cup.x,r.z-H.cup.z);
@@ -2205,7 +2321,7 @@ function ghostStep(gh){const ph=gh.ph,r=ph.step();gh.x=r.x;gh.y=r.y;gh.z=r.z;gh.
   gh.rollT+=ph.dt;
   if((r.grounded&&sp<.07&&Math.abs(r.vy)<.12&&(gh.stillT+=ph.dt)>.3)||gh.rollT>30){gh.moving=false;gh.simStop={x:r.x,y:r.y,z:r.z,n:gh.n};ph.body.setLinvel({x:0,y:0,z:0},true);ph.body.setAngvel({x:0,y:0,z:0},true);}
   else if(!(r.grounded&&sp<.07&&Math.abs(r.vy)<.12))gh.stillT=0;}
-function ghostPlace(gh,x,y,z){if(gh.ph){gh.ph.place(x,y,z);gh.ph.body.setEnabled(true);}gh.x=x;gh.y=y;gh.z=z;gh.vx=gh.vz=0;gh.moving=false;gh.holed=false;gh.hazT=0;gh.stillT=0;gh.rollT=0;}
+function ghostPlace(gh,x,y,z){gh.ppx=x;gh.ppy=y;gh.ppz=z;if(gh.ph){gh.ph.place(x,y,z);gh.ph.body.setEnabled(true);}gh.x=x;gh.y=y;gh.z=z;gh.vx=gh.vz=0;gh.moving=false;gh.holed=false;gh.hazT=0;gh.stillT=0;gh.rollT=0;}
 function clearGhosts(){for(const [k,gh] of ghosts){gh.av.dispose();scene.remove(gh.label);gh.label.material.map.dispose();gh.label.material.dispose();if(gh.ph)gh.ph.free();ghosts.delete(k);}}
 function updateGhosts(dt,t,playing){
   const seenNow=new Set();
@@ -2231,11 +2347,12 @@ function updateGhosts(dt,t,playing){
         else if(n===gh.n&&!gh.moving&&gh.hazT<=0&&!gh.holed){gh.rsKey=key;const d=Math.hypot(gh.x-x,gh.y-y,gh.z-z);if(d>.005){gh.off={x:gh.x+gh.off.x-x,y:gh.y+gh.off.y-y,z:gh.z+gh.off.z-z};ghostPlace(gh,x,y,z);}}
         else if(n===gh.n&&(gh.rsWait+=dt)>2.5){gh.rsKey=key;gh.off={x:gh.x-x,y:gh.y-y,z:gh.z-z};ghostPlace(gh,x,y,z);}}}
     const k=Math.min(1,dt/.2*3);gh.off.x-=gh.off.x*k;gh.off.y-=gh.off.y*k;gh.off.z-=gh.off.z*k;
-    let vx=gh.x+gh.off.x,vy=gh.y+gh.off.y,vz=gh.z+gh.off.z;
+    let gx=gh.x,gy=gh.y,gz=gh.z;if(gh.moving&&gh.ph&&gh.ppx!=null){const f=clamp((sharedTime()-gh.ph.t)/gh.ph.dt,0,1);gx=gh.ppx+(gh.x-gh.ppx)*f;gy=gh.ppy+(gh.y-gh.ppy)*f;gz=gh.ppz+(gh.z-gh.ppz)*f;}
+    let vx=gx+gh.off.x,vy=gy+gh.off.y,vz=gz+gh.off.z;
     if(gh.holed||pr.d){gh.sinkT+=dt;vx+=(H.cup.x-vx)*Math.min(1,gh.sinkT*6);vz+=(H.cup.z-vz)*Math.min(1,gh.sinkT*6);vy=Math.max(H.cupH-CUPD,vy-gh.sinkT*1.2);}
     const visible=!(gh.hazT>0)&&!((gh.holed||pr.d)&&gh.sinkT>1.2);
     gh.av.set(cleanCustom(pr.cu||{c:pr.c}),true);gh.av.update(dt,t,vx,vy,vz,gh.moving?gh.vx:0,gh.moving?gh.vz:0,gh.moving,visible,cam.yaw+Math.PI);
-    gh.label.visible=visible&&!pr.d;gh.label.position.set(vx,vy+.62,vz);gh.vis={x:vx,y:vy,z:vz,visible};
+    gh.label.visible=visible&&!pr.d;gh.label.position.set(vx,vy+.95,vz);gh.vis={x:vx,y:vy,z:vz,visible};
     reactToPeer(p.peer,pr,gh);emoteFromPeer(pr,gh);}
   for(const [k,gh] of ghosts)if(!seenNow.has(k)){gh.av.dispose();scene.remove(gh.label);gh.label.material.map.dispose();gh.label.material.dispose();if(gh.ph)gh.ph.free();ghosts.delete(k);}
 }
@@ -2310,6 +2427,24 @@ function updateFeel(dt,t){if(!H)return;
       a[i*3]=px+ox;a[i*3+1]=f.y+s[2];a[i*3+2]=pz+oz;}
     f.pts.geometry.attributes.position.needsUpdate=true;}}
 
+// libellé d'un bouton en gardant son icône dessinée
+function btnLabel(id,text,icon){const b=$(id);if(b)b.innerHTML=`<svg class="ic"><use href="#i-${icon}"/></svg>`+esc(text);}
+// ===================== Salle d'attente : les balles des joueurs sur un podium 3D, nom au-dessus =====================
+const stage={grp:null,slots:[],key:'',c:null};
+function clearLobbyStage(){if(!stage.grp)return;for(const s of stage.slots){s.av.dispose();}stage.slots=[];scene.remove(stage.grp);disposeGroup(stage.grp);stage.grp=null;stage.key='';}
+function updateLobbyStage(){if(S.mode!=='lobby'||!H){clearLobbyStage();return;}
+  const ps=activePlayers().slice(0,MAXP),key=ps.map(p=>p.peer+JSON.stringify(cleanCustom(p.presence.cu||{c:p.presence.c}))+p.presence.n+(p.presence.rd?1:0)+(p.presence.host?1:0)).join('|');
+  if(key===stage.key&&stage.grp)return;clearLobbyStage();stage.key=key;
+  const g=new THREE.Group();const tee=H.tee,y=hAt(H,tee.x,tee.z);g.position.set(tee.x,y,tee.z);scene.add(g);stage.grp=g;stage.c=new THREE.Vector3(tee.x,y,tee.z);
+  const n=Math.max(1,ps.length),sp=1.15;
+  ps.forEach((p,i)=>{const x=(i-(n-1)/2)*sp,h=.18+(p.presence.host?.14:0);
+    const blk=new THREE.Mesh(new THREE.CylinderGeometry(.42,.48,h,28),mat(p.presence.host?0xffcf2e:0xfff6e2,{roughness:.5}));blk.position.set(x,h/2,0);blk.castShadow=true;blk.receiveShadow=true;g.add(blk);
+    const rim=new THREE.Mesh(new THREE.TorusGeometry(.43,.03,8,28),mat(0x2a2118));rim.rotation.x=Math.PI/2;rim.position.set(x,h,0);g.add(rim);
+    const av=new Avatar(g);av.set(cleanCustom(p.presence.cu||{c:p.presence.c}),false);av.grp.scale.setScalar(.24/BR);
+    const lab=nameSprite(String(p.presence.n).slice(0,14)+(p.presence.rd||p.presence.host?' ✓':''));lab.scale.set(1.5,.29,1);lab.position.set(x,h+.95,0);g.add(lab);
+    stage.slots.push({av,x,h,lab,ph:i*.7});});}
+function animLobbyStage(dt,t){if(!stage.grp)return;for(const s of stage.slots){const hop=Math.abs(Math.sin(t*3+s.ph))*.08;s.av.update(dt,t,s.x,s.h+hop+.24-BR,0,0,0,false,true,Math.sin(t*.8+s.ph)*.6);}}
+
 // ===================== Podium 3D de fin (les 3 premiers dansent sur leurs marches) =====================
 const podium={grp:null,avs:[],t:0,c:null};
 function clearPodium(){if(!podium.grp)return;for(const a of podium.avs){a.av.dispose();}podium.avs=[];scene.remove(podium.grp);disposeGroup(podium.grp);podium.grp=null;}
@@ -2321,11 +2456,11 @@ function buildPodium(list){clearPodium();if(!H||!list.length)return;const g=new 
   for(const s of steps){if(!list[s.r])continue;const p=list[s.r];
     const tx=canvasTex(128,128,(x,w,h)=>{x.fillStyle='#'+new THREE.Color(s.c).getHexString();x.fillRect(0,0,w,h);x.fillStyle='rgba(0,0,0,.18)';x.fillRect(0,h-16,w,16);x.font='700 84px Fredoka, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#fff';x.strokeStyle='rgba(0,0,0,.35)';x.lineWidth=8;x.strokeText(String(s.r+1),w/2,h/2);x.fillText(String(s.r+1),w/2,h/2);});
     const blk=new THREE.Mesh(new THREE.BoxGeometry(1.2,s.h,1.2),mat(0xffffff,{map:tx,roughness:.5}));blk.position.set(s.x,s.h/2,0);blk.castShadow=true;blk.receiveShadow=true;g.add(blk);
-    const av=new Avatar(g);av.set(cleanCustom(p.cu||{c:p.c}),false);av.grp.scale.setScalar(4.2);const lab=nameSprite(String(p.n||'').slice(0,14));lab.scale.set(2.6,.5,1);g.add(lab);
+    const av=new Avatar(g);av.set(cleanCustom(p.cu||{c:p.c}),false);av.grp.scale.setScalar(2.1);const lab=nameSprite(String(p.n||'').slice(0,14));lab.scale.set(2.6,.5,1);g.add(lab);
     podium.avs.push({av,lab,x:s.x,y:s.h,r:s.r});}
   for(let i=0;i<3;i++)setTimeout(()=>{if(podium.grp)confetti(C.x,C.y+2.4,C.z,i===0);},300+i*900);}
 function updatePodium(dt,t){if(!podium.grp)return;podium.t+=dt;
-  for(const a of podium.avs){const hop=Math.abs(Math.sin(t*(a.r?4:5.5)+a.r))*(a.r?.18:.32);a.av.update(dt,t,a.x,a.y+hop+BR*3.2,0,0,0,false,true,t*(a.r?1.5:2.5));a.av.ball.rotation.y=t*2;a.lab.position.set(a.x,a.y+hop+1.25,0);}}
+  for(const a of podium.avs){const hop=Math.abs(Math.sin(t*(a.r?4:5.5)+a.r))*(a.r?.18:.32);a.av.update(dt,t,a.x,a.y+hop+BR*1.1,0,0,0,false,true,t*(a.r?1.5:2.5));a.av.ball.rotation.y=t*2;a.lab.position.set(a.x,a.y+hop+1.25,0);}}
 
 // ===================== Reconnexion : on reprend où on en était =====================
 function rejoinKey(){return S.code?'po_rj_'+S.code:null;}
@@ -2342,7 +2477,7 @@ function restoreRejoin(){const k=rejoinKey();if(!k)return;const r=safeJSON(ssGet
 async function ensurePhysics(hd){if(PH){PH.free();PH=null;}const R=RAPIER||await Promise.race([rapierReady,new Promise(r=>setTimeout(()=>r(null),8000))]);
   if(R&&H===hd){PH=new Phys(hd);PH.resetObstacles(sharedTime());PH.place(ball.x,ball.y,ball.z);physAcc=0;}}
 function loadHole(i){
-  clearPodium();S.mode='play';S.curI=i;H=buildHole(S.L[i]);buildScene(H);
+  clearPodium();clearLobbyStage();S.mode='play';S.curI=i;H=buildHole(S.L[i]);buildScene(H);
   for(let k=0;k<i;k++)if(S.sc[k]==null)S.sc[k]=HOLES[S.L[k]].par+PEN;
   S.strokes=0;S.shotN=0;S.done=false;S.pen=false;S.firstDoneAt=0;S.advanceAt=0;S.lastTick=-1;simT=0;swing.on=false;aim.on=false;
   if(PH){PH.free();PH=null;}if(PV){PV.free();PV=null;pvHd=null;}clearGhosts();
@@ -2395,6 +2530,7 @@ function fmtDiff(d){return d===0?'E':(d>0?'+'+d:''+d);}
 function renderBoard(){
   const list=[...S.seen.values()].filter(p=>p.ep===S.ep);
   list.sort((a,b)=>totals(a.sc,S.L).d-totals(b.sc,S.L).d);
+  $('board').hidden=list.length<2;$('emotes').hidden=list.length<2;
   $('board').innerHTML=list.map(p=>{const t=totals(p.sc,S.L);const onHole=p.h===S.curI;
     const st=p.gone?'a quitté':!onHole?'chargement…':p.d?(p.pen?'+5 pénalité · '+p.s+' coups':'dans le trou · '+p.s+(p.s>1?' coups':' coup')):'joue · '+(p.s|0)+' coup'+((p.s|0)>1?'s':'');
     return `<div class="pl${p.isMe?' me':''}${p.gone?' gone':''}"><span class="dot" style="background:${COLORS[p.c|0]||'#fff'}"></span><span class="nm">${esc(p.n)}${p.isMe?' (toi)':''}</span><span class="tot">${t.n?fmtDiff(t.d):'–'}</span><span class="st">${esc(st)}</span></div>`;}).join('');
@@ -2410,7 +2546,7 @@ function showFinal(){
     L.map((n,k)=>{const v=p.sc&&p.sc[k];if(typeof v!=='number')return'<td>–</td>';const d=v-HOLES[n].par;return`<td class="${v===1?'ace':d<0?'u':d>0?'o':''}">${v}</td>`;}).join('')+`<td class="total">${t.s} <small>(${fmtDiff(t.d)})</small></td></tr>`;}
   $('scard').innerHTML=h+'</tbody>';
   const w=list[0];$('podium').innerHTML=w?`<div class="p1">${esc(w.n)} gagne avec ${totals(w.sc,L).s} coups</div>`+list.slice(1).map((p,k)=>`<div class="note">${k+2}. ${esc(p.n)} — ${totals(p.sc,L).s} coups</div>`).join(''):'';
-  $('btnAgain').textContent=S.net&&S.net.kind==='local'?'Rejouer':'Revenir au groupe';
+  btnLabel('btnAgain',S.net&&S.net.kind==='local'?'Rejouer':'Revenir au groupe','play');
   $('mFinal').classList.add('side');$('mFinal').hidden=false;SFX.win();buildPodium(list);
 }
 
@@ -2473,7 +2609,7 @@ function openCustom(){S.mode='custom';showOnly('scrCustom');renderCustom();
     pv.scene.add(new THREE.HemisphereLight(0xffffff,0x335533,.8));const l=new THREE.DirectionalLight(0xffffff,.8);l.position.set(2,4,2);l.castShadow=true;pv.scene.add(l);
     const g=new THREE.Mesh(new THREE.CylinderGeometry(.9,.95,.08,48),mat(0xffffff,{map:grassFor(WORLDS[0])}));g.position.y=-.04;g.receiveShadow=true;pv.scene.add(g);
     const rim=new THREE.Mesh(new THREE.TorusGeometry(.92,.04,10,64),mat(0xf0ebe0));rim.rotation.x=Math.PI/2;pv.scene.add(rim);
-    pv.av=new Avatar(pv.scene);pv.av.grp.scale.setScalar(5.2);}
+    pv.av=new Avatar(pv.scene);pv.av.grp.scale.setScalar(2.6);}
   pv.av.set(S.cu,false);
   const r=$('pv').getBoundingClientRect();pv.r.setSize(Math.max(200,r.width),Math.max(200,r.width),false);}
 function closeCustom(){S.mode='menu';showOnly('scrMenu');renderMe();}
@@ -2496,7 +2632,7 @@ function enterLobby(){
 }
 function renderLobby(){
   if(S.mode!=='lobby')return;const local=S.net&&S.net.kind==='local';
-  $('codeField').hidden=local;$('linkField').hidden=local;$('playersField').hidden=local;
+  $('codeField').hidden=local;$('linkField').hidden=local;$('playersField').hidden=true;updateLobbyStage();
   $('codeBox').textContent=(S.code||'').toUpperCase();const link=groupLink();$('inLink').value=link||'Partage le code ci-dessus';$('btnCopy').disabled=!link;
   const ps=activePlayers().slice().sort((a,b)=>(b.presence.host?1:0)-(a.presence.host?1:0));
   $('playersLbl').textContent='Joueurs '+ps.length+'/'+MAXP;
@@ -2504,9 +2640,9 @@ function renderLobby(){
   for(let k=ps.length;k<MAXP;k++)h+='<li class="empty-slot"><span class="dot" style="background:rgba(255,255,255,.15)"></span><span class="who">Place libre</span></li>';
   $('players').innerHTML=h;
   const host=S.isHost||local;$('selCourse').disabled=!host;for(const id of ['selCount','selTheme','selHole'])$(id).disabled=!host;$('btnStart').hidden=!host;$('btnReady').hidden=host;
-  $('btnReady').textContent=S.ready?'Pas prêt':'Je suis prêt';
+  btnLabel('btnReady',S.ready?'Pas prêt':'Je suis prêt','check');
   const others=ps.filter(p=>!p.presence.host),readyN=others.filter(p=>p.presence.rd).length;
-  $('btnStart').textContent=local||!others.length?'Lancer la partie':'Lancer ('+readyN+'/'+others.length+' prêts)';
+  btnLabel('btnStart',local||!others.length?'Lancer':'Lancer ('+readyN+'/'+others.length+')','flag');
   if(!host&&S.g&&S.g.cn)$('lobbyNote').textContent='Parcours choisi par l’hôte : '+S.g.cn+'. Clique sur « Je suis prêt », l’hôte lance la partie.';
   else if(!host)$('lobbyNote').textContent='En attente de l’hôte… Clique sur « Je suis prêt ».';
   else if(local)$('lobbyNote').textContent='Choisis ton parcours. Le chrono de 25 s ne s’applique qu’en groupe.';
@@ -2516,7 +2652,7 @@ $('btnReady').addEventListener('click',()=>{S.ready=!S.ready;setP({rd:S.ready?1:
 $('selCourse').addEventListener('change',()=>{const v=$('selCourse').value;lsSet('po_course',v);const L=courseList(v);menuBackdrop(L[0]);
   if(S.isHost&&S.g&&S.g.ph==='lobby'){S.g=Object.assign({},S.g,{cn:courseLabel(v)});setP({g:S.g});}});
 $('btnCopy').addEventListener('click',async()=>{const v=groupLink()||(S.code||'').toUpperCase();const ok=await copyText(v);const inp=$('inLink');inp.focus();inp.select();
-  toastMsg(ok?'Lien copié ! Colle-le à tes amis (Ctrl+V).':'Copie impossible, copie le lien manuellement (il est sélectionné : Ctrl+C).');$('btnCopy').textContent=ok?'Copié !':'Copier';setTimeout(()=>{$('btnCopy').textContent='Copier';},2000);});
+  toastMsg(ok?'Lien copié ! Colle-le à tes amis (Ctrl+V).':'Copie impossible, copie le lien manuellement (il est sélectionné : Ctrl+C).');btnLabel('btnCopy',ok?'Copié !':'Copier',ok?'check':'copy');setTimeout(()=>{btnLabel('btnCopy','Copier','copy');},2000);});
 $('inLink').addEventListener('focus',e=>e.target.select());
 $('btnStart').addEventListener('click',()=>{SFX.init();const v=$('selCourse').value;const L=courseList(v);
   const g={ph:'play',L,i:0,ep:rid(5),cn:courseLabel(v)};S.g=g;setP({host:S.net.kind==='local'?1:S.my.host,g});applyGame(g);});
@@ -2541,7 +2677,7 @@ async function startNet(code,create){
   if(!create&&(net.kind==='room'||net.kind==='mqtt'))setTimeout(()=>{if(S.net!==net)return;const others=activePlayers().filter(p=>!p.isMe);if(others.length>=MAXP){leaveGroup();toastMsg('Ce groupe est complet (5 joueurs max).');}
     else if(!others.length)toastMsg('Personne dans ce groupe pour l’instant. Vérifie le code.');},2500);
 }
-function leaveGroup(){clearPodium();if(S.code){try{sessionStorage.removeItem('po_rj_'+S.code);history.replaceState(null,'',location.pathname);}catch(e){}}if(S.net){const n=S.net;S.net=null;try{n.leave();}catch(e){}}
+function leaveGroup(){clearPodium();clearLobbyStage();if(S.code){try{sessionStorage.removeItem('po_rj_'+S.code);history.replaceState(null,'',location.pathname);}catch(e){}}if(S.net){const n=S.net;S.net=null;try{n.leave();}catch(e){}}
   S.g=null;S.ep=null;S.curI=-1;S.mode='menu';S.peers=[];S.seen.clear();S.my={};S.code=null;S.isHost=false;aim.on=false;swing.on=false;
   $('hud').hidden=true;$('mFinal').hidden=true;$('mBetween').hidden=true;$('mPause').hidden=true;hideLoading();showOnly('scrMenu');menuBackdrop(Math.floor(Math.random()*HOLES.length));}
 $('btnCreate').addEventListener('click',()=>startNet(rid(5),true));
@@ -2558,7 +2694,7 @@ $('btnAgain').addEventListener('click',()=>{$('mFinal').hidden=true;if(S.isHost|
 let last=performance.now();
 function frame(now){
   const dt=Math.min(.05,(now-last)/1000);last=now;
-  if(H){simT+=dt;updateObstacles(PH?PH.t:sharedTime(),dt);if(S.mode==='play')updateBall(dt);keyCam(dt);updateCamera(dt);updateVisuals(dt,now/1000);}
+  if(H){simT+=dt;updateObstacles(sharedTime(),dt);if(S.mode==='play')updateBall(dt);keyCam(dt);updateCamera(dt);updateVisuals(dt,now/1000);}
   if(S.mode==='custom')renderPreview(dt);else{composer.render(dt);adaptQuality(dt);}
   fpsTick(dt);if(H)drawMini(dt,now/1000);
   requestAnimationFrame(frame);
@@ -2571,12 +2707,14 @@ function drawDist(m){const a=anim.dist;if(!a||a.v===m)return;a.v=m;const x=a.cv.
 function updateVisuals(dt,t){
   const playing=S.mode==='play';let show=playing&&!ball.hidden&&!(ball.holed&&ball.sinkT>1.2);const w=windNow(H,PH?PH.t:sharedTime());H.wind.cur=w.cur;H.wind.x=w.x;H.wind.z=w.z;
   // la balle visible recule dans la catapulte pendant la charge ; les yeux regardent dans la direction du tir
-  const pdx=aim.dx||0,pdz=aim.dz||0;let mx=ball.x-pdx*pullVis,my=ball.y,mz=ball.z-pdz*pullVis,look=aim.on&&(pdx||pdz)?Math.atan2(pdx,pdz):cam.yaw+Math.PI;
+  const pdx=aim.dx||0,pdz=aim.dz||0;const bp0=ballDraw();let mx=bp0.x-pdx*pullVis,my=bp0.y,mz=bp0.z-pdz*pullVis,look=aim.on&&(pdx||pdz)?Math.atan2(pdx,pdz):cam.yaw+Math.PI;
   // petite danse de victoire : la balle ressort à côté du trou, sautille et tourne
   if(playing&&ball.holed&&ball.sinkT>1&&ball.sinkT<3.8){const k=ball.sinkT-1;mx=H.cup.x+.45;mz=H.cup.z;my=hAt(H,mx,mz)+Math.abs(Math.sin(k*8))*.22;look=t*7;show=!ball.hidden;}
+  // écran titre : la balle du joueur posée au départ, la caméra tourne autour
+  if(S.mode==='menu'&&H){mx=H.tee.x;mz=H.tee.z;my=hAt(H,mx,mz);show=true;look=t*.5;}
   me.update(dt,t,mx,my,mz,ball.moving?ball.vx:0,ball.moving?ball.vz:0,ball.moving&&playing,show,look);
   if(!myLabel||myLabelName!==S.name){if(myLabel){scene.remove(myLabel);myLabel.material.map.dispose();myLabel.material.dispose();}myLabelName=S.name;myLabel=nameSprite(S.name||'Moi');scene.add(myLabel);}
-  myLabel.visible=show&&!S.done&&!aim.on;myLabel.position.set(ball.x-pdx*pullVis,ball.y+.62,ball.z-pdz*pullVis);
+  myLabel.visible=show&&playing&&!S.done&&!aim.on&&!!S.net&&S.net.kind!=='local';myLabel.position.set(mx,my+.95,mz);
   // le soleil (et sa zone d'ombres nettes) suit la balle
   sun.target.position.set(cur.tx,cur.ty,cur.tz);sun.position.copy(sun.target.position).add(SUN_OFF);
   if(anim.sea&&anim.sea.uniforms)anim.sea.uniforms.time.value=t;
@@ -2609,7 +2747,8 @@ function updateVisuals(dt,t){
   if(playing){const rX=Math.cos(cam.yaw),rZ=-Math.sin(cam.yaw),fX=-Math.sin(cam.yaw),fZ=-Math.cos(cam.yaw);
     const sx=w.x*rX+w.z*rZ,sy=w.x*fX+w.z*fZ;$('windArrow').style.transform=`rotate(${Math.atan2(sx,sy)*180/Math.PI}deg)`;$('windArrow').style.opacity=w.cur>.02?1:.25;
     $('windKmh').textContent=Math.round(w.cur*40)+' km/h';$('windLbl').textContent=w.cur<.02?'Pas de vent':H.wind.gust?'Rafales':w.cur<.35?'Brise':w.cur<.65?'Vent':'Vent fort';}
-  updateShotFx(dt);updateFloats(dt);updateFeel(dt,t);updatePodium(dt,t);updateAmbient(dt,t,w);updateAim(dt,t);updateDebug();
+  if(anim.sign)anim.sign.visible=camera.position.distanceTo(anim.sign.position)>3.4;
+  updateShotFx(dt);updateFloats(dt);updateFeel(dt,t);updatePodium(dt,t);animLobbyStage(dt,t);updateAmbient(dt,t,w);updateAim(dt,t);updateDebug();
 }
 
 // ===================== Robot de test : vérifie que chaque trou est faisable =====================
@@ -2648,7 +2787,7 @@ async function botHole(idx,maxStrokes){if(!RAPIER)return{idx,err:'Rapier non cha
   finally{ph.free();}}
 
 // accès de débogage depuis la console (le script est un module)
-Object.assign(window,{renderPreview,holed,showFinal,podium,stepFrame:dt=>{if(!H)return;updateObstacles(PH?PH.t:sharedTime(),dt);if(S.mode==='play')updateBall(dt);updateVisuals(dt,performance.now()/1000);},shoot,sharedTime,clockS,gaugeDist,flatDistRaw,distToV,previewPath,aimMove,ballScreen,floatText,camAvoid,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
+Object.assign(window,{renderPreview,holed,showFinal,podium,stepFrame:dt=>{if(!H)return;updateObstacles(sharedTime(),dt);if(S.mode==='play')updateBall(dt);updateVisuals(dt,performance.now()/1000);},shoot,sharedTime,clockS,gaugeDist,flatDistRaw,distToV,previewPath,aimMove,ballScreen,floatText,camAvoid,botShot,botProgress,loadHole,inRect,hAtCell,hBaseCell,floorPhysData,S,ball,cam,aim,HOLES,WORLDS,MAXV,CR,BR,CS,FRICTION,buildHole,buildScene,botHole,Phys,hAt,cellAt,placeBall,ballStopped,shoot,release,updateAim,updateBall,updateVisuals,updateCamera,updateObstacles,canShoot,leaveGroup,powerCurve,windNow,rapierReady,THREE,camera,canvas,kenney,composer,ssao,bloom,perf,LocalNet,onPeers,setP,applyGame,activePlayers,ghosts,cleanCustom});
 for(const [k,g] of Object.entries({anim:()=>anim,H:()=>H,PH:()=>PH,RAPIER:()=>RAPIER,simT:()=>simT}))Object.defineProperty(window,k,{get:g,configurable:true});
 
 // ===================== Démarrage =====================
